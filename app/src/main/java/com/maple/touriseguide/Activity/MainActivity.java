@@ -1,37 +1,25 @@
 package com.maple.touriseguide.Activity;
 
 import android.os.Bundle;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
-
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
-import com.baidu.mapapi.SDKInitializer;
-import com.baidu.mapapi.map.BaiduMap;
-import com.baidu.mapapi.map.BitmapDescriptor;
-import com.baidu.mapapi.map.BitmapDescriptorFactory;
-import com.baidu.mapapi.map.MapStatus;
-import com.baidu.mapapi.map.MapStatusUpdateFactory;
-import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.MyLocationConfiguration;
-import com.baidu.mapapi.map.MyLocationData;
-import com.baidu.mapapi.model.LatLng;
+import android.widget.LinearLayout;
 import com.maple.touriseguide.Common.MyFragmentStateAdapter;
 import com.maple.touriseguide.Fragment.FirstFragment;
 import com.maple.touriseguide.Fragment.MapFragment;
 import com.maple.touriseguide.Fragment.SecondFragment;
 import com.maple.touriseguide.R;
+import com.maple.touriseguide.Util.MyViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private MyViewPager vp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +31,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        LinearLayout first = (LinearLayout) findViewById(R.id.first);
+        LinearLayout second = (LinearLayout) findViewById(R.id.second);
+        LinearLayout third = (LinearLayout) findViewById(R.id.third);
+        LinearLayout forth = (LinearLayout) findViewById(R.id.forth);
+
         //构造适配器
         List<Fragment> fragments=new ArrayList<Fragment>();
         fragments.add(new MapFragment());
@@ -51,9 +44,35 @@ public class MainActivity extends AppCompatActivity {
         MyFragmentStateAdapter adapter = new MyFragmentStateAdapter(getSupportFragmentManager(), fragments);
 
         //设定适配器
-        ViewPager vp = (ViewPager)findViewById(R.id.viewpager);
+        vp = (MyViewPager) findViewById(R.id.viewpager);
+        vp.setScanScroll(false);
         vp.setAdapter(adapter);
+        vp.setCurrentItem(0);
+
+        first.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vp.setCurrentItem(0);
+            }
+        });
+        second.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vp.setCurrentItem(1);
+            }
+        });
+        third.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vp.setCurrentItem(3);
+            }
+        });
+        /*forth.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vp.setCurrentItem(4);
+            }
+        });*/
 
     }
-
 }

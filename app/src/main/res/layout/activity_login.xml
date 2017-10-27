@@ -19,24 +19,28 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom">
+                android:layout_gravity="bottom"
+                android:gravity="center">
+
                 <RadioGroup
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <RadioButton
                         android:id="@+id/youke"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="65dp"
                         android:checked="true"
-                        android:layout_marginLeft="65dp"
                         android:text="游客登录" />
 
                     <RadioButton
                         android:id="@+id/daoyou"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="60dp"
+                        android:layout_gravity="center"
                         android:text="导游登录" />
                 </RadioGroup>
             </RelativeLayout>
@@ -77,34 +81,35 @@
                 android:layout_margin="10dp"
                 android:text="登录" />
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/reset_pw"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginEnd="64dp"
-                    android:layout_marginTop="0dp"
-                    android:textColor="#0600ad"
-                    android:text="忘记密码？"
-                    android:clickable="true"/>
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/register"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/reset_pw"
-                    android:layout_alignBottom="@+id/reset_pw"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginStart="66dp"
-                    android:textColor="#0600ad"
-                    android:text="没有账号？"
-                    android:clickable="true"/>
-            </RelativeLayout>
+                    <TextView
+                        android:id="@+id/reset_pw"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:text="忘记密码？"
+                        android:layout_marginRight="115dp"
+                        android:textColor="#0600ad" />
+
+                    <TextView
+                        android:id="@+id/register"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:text="没有账号？"
+                        android:textColor="#0600ad" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

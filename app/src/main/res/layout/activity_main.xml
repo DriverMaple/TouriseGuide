@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context="com.maple.touriseguide.Activity.MainActivity">
 
-    <android.support.v4.view.ViewPager
+    <com.maple.touriseguide.Util.MyViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -22,43 +22,56 @@
         android:orientation="horizontal">
 
         <LinearLayout
+            android:id="@+id/first"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
-            <Button
+            android:layout_weight="1"
+            android:clickable="true">
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:text="1"/>
+                android:gravity="center"
+                android:text="firstPage" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/second"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
-            <Button
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:text="2"/>
+                android:gravity="center"
+                android:text="firstPage" />
         </LinearLayout>
 
         <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:text="3"/>
-        </LinearLayout>
-
-        <LinearLayout
+            android:id="@+id/third"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
-            <Button
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:text="4"/>
+                android:gravity="center"
+                android:text="firstPage" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/forth"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:text="firstPage" />
         </LinearLayout>
     </LinearLayout>
 

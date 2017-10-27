@@ -170,7 +170,6 @@ public class MapFragment extends Fragment {
             mBaiduMap.setMyLocationConfiguration(configuration);
 
             LatLng ll = new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude());
-            Log.d("ll:",ll.toString());
             //第一次定位需要更新下地图显示状态
             if (isFirstLoc) {
                 isFirstLoc = false;
