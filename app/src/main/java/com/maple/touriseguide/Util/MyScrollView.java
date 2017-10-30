@@ -35,7 +35,7 @@ public class MyScrollView extends ScrollView{
         //获取可视区域
         int height = getHeight();
         if(measuredHeight==scrollY+height){
-            Toast.makeText(getContext(), "到底了！",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "到底了！",Toast.LENGTH_LONG).show();
             listener.loadMore();
         }
         return super.onTouchEvent(ev);
