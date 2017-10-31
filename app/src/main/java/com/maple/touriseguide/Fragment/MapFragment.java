@@ -2,11 +2,9 @@ package com.maple.touriseguide.Fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -22,7 +20,6 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
-import com.maple.touriseguide.Activity.MainActivity;
 import com.maple.touriseguide.R;
 
 /**
@@ -48,7 +45,7 @@ public class MapFragment extends Fragment {
         //注意该方法要再setContentView方法之前实现
         SDKInitializer.initialize(getActivity().getApplicationContext());
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.view_map, container, false);
+        View view= inflater.inflate(R.layout.fragment_map, container, false);
 
         //初始化试图
         initView(view);
@@ -99,7 +96,7 @@ public class MapFragment extends Fragment {
         //2. bd09：百度墨卡托坐标；
         //3. bd09ll：百度经纬度坐标；
 
-        int span = 1000;
+        int span = 3000;
         option.setScanSpan(span);
         //可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
 

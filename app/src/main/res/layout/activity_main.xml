@@ -12,7 +12,8 @@
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:clickable="true"/>
 
     <LinearLayout
         android:id="@+id/navigation"
@@ -32,20 +33,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:gravity="center"
-                android:text="firstPage" />
+                android:text="景点推荐" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/second"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:clickable="true">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:gravity="center"
-                android:text="firstPage" />
+                android:text="我的团队" />
         </LinearLayout>
 
         <LinearLayout
@@ -58,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:gravity="center"
-                android:text="firstPage" />
+                android:text="地图导航" />
         </LinearLayout>
 
         <LinearLayout
@@ -71,7 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:gravity="center"
-                android:text="firstPage" />
+                android:text="个人中心" />
         </LinearLayout>
     </LinearLayout>
 

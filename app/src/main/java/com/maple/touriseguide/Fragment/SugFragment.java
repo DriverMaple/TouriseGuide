@@ -1,7 +1,6 @@
 package com.maple.touriseguide.Fragment;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
@@ -17,19 +16,14 @@ import com.maple.touriseguide.Util.MyScrollView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.BitmapCallback;
 
-import java.io.IOException;
-
 import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * Created by rrr on 2017/10/26.
  */
 
-public class FirstFragment extends Fragment {
+public class SugFragment extends Fragment {
     private LinearLayout firstClo, secondClo;
     // 每一个ImageView的宽度，是屏幕宽度的1/2
     private int imgvWidth;
@@ -47,7 +41,7 @@ public class FirstFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.view1, container, false);
+        View view = inflater.inflate(R.layout.fragment_sug, container, false);
         myScrollView = (MyScrollView) view.findViewById(R.id.myScrollView);
         firstClo = (LinearLayout) view.findViewById(R.id.firstClo);
         secondClo = (LinearLayout) view.findViewById(R.id.sceondClo);

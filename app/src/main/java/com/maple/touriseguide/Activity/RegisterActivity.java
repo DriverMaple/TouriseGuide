@@ -1,28 +1,36 @@
 package com.maple.touriseguide.Activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.maple.touriseguide.R;
 
-public class LoginActivity extends AppCompatActivity {
-    private Button login;
+/**
+ * Created by rrr on 2017/10/31.
+ */
+
+public class RegisterActivity extends AppCompatActivity {
     private EditText phone_text;
+    private EditText code_text;
     private EditText password_text;
-    private TextView register;
+    private EditText repassword_text;
+    private Button getcode;
+    private Button register;
+    private Button back;
 
     private String phone;
-    private String password;
+    private String code;
+    private String passwrod;
+    private String repassword;
 
     // 定义一个变量，来标识是否退出
     private static boolean isExit = false;
@@ -38,39 +46,51 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_register);
         initView();
 
 
     }
 
     private void initView() {
-        login = (Button) findViewById(R.id.login);
         phone_text = (EditText) findViewById(R.id.phone);
+        code_text = (EditText) findViewById(R.id.code);
         password_text = (EditText) findViewById(R.id.password);
-        register = (TextView) findViewById(R.id.register);
+        repassword_text = (EditText) findViewById(R.id.repassword);
+        getcode = (Button) findViewById(R.id.getcode);
+        register = (Button) findViewById(R.id.register);
+        back = (Button) findViewById(R.id.back);
 
-
-        login.setOnClickListener(new View.OnClickListener() {
+        back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                phone = phone_text.getText().toString();
-                password = password_text.getText().toString();
-
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
             }
         });
+
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                code = code_text.getText().toString();
+                phone = phone_text.getText().toString();
+                passwrod = password_text.getText().toString();
+                repassword = repassword_text.getText().toString();
+                if (phone.equals("")&&passwrod.equals("")&&repassword.equals("")){
+                    Toast.makeText(getApplicationContext(),"手机号或密码不能为空！",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (!passwrod.equals(repassword)){
+                    Toast.makeText(getApplicationContext(),"两次密码不一致！",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
             }
         });
-
     }
 
     /**

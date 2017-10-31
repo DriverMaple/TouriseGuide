@@ -51,6 +51,9 @@
         <activity
             android:name=".Activity.MainActivity"
             android:label="@string/title_activity_login" />
+        <activity
+            android:name=".Activity.RegisterActivity"
+            android:label="@string/title_activity_login" />
     </application>
 
 </manifest>

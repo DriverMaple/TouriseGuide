@@ -12,11 +12,11 @@ import com.maple.touriseguide.R;
  * Created by rrr on 2017/10/26.
  */
 
-public class SecondFragment extends Fragment {
+public class TeaFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.view2, container, false);
+        View view= inflater.inflate(R.layout.fragment_tea, container, false);
         return view;
     }
 }
