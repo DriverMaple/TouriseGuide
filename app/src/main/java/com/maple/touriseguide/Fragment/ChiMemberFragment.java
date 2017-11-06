@@ -1,5 +1,6 @@
 package com.maple.touriseguide.Fragment;
 
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,31 +9,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.maple.touriseguide.R;
-import com.maple.touriseguide.Util.MyViewPager;
 
 /**
- * Created by rrr on 2017/10/31.
+ * Created by Maple on 2017/11/6.
  */
 
-public class CenFragment extends Fragment{
-    private Button exists;
+public class ChiMemberFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_cen, container, false);
+        View view= inflater.inflate(R.layout.chi_fragment_member, container, false);
         initView(view);
         return view;
     }
 
     private void initView(View view) {
-        exists = (Button) view.findViewById(R.id.exist);
-
-        exists.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().finish();
-                System.exit(0);
-            }
-        });
     }
 }

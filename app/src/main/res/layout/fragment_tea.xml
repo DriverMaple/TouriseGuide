@@ -59,7 +59,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:clickable="true"
                     android:gravity="center_vertical"
                     android:text="团队成员" />
             </LinearLayout>
@@ -81,24 +80,17 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:clickable="true"
                     android:gravity="center_vertical"
                     android:text="旅途点滴" />
             </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout
+        <com.maple.touriseguide.Util.MyViewPager
+            android:id="@+id/vp"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        </LinearLayout>
+        </com.maple.touriseguide.Util.MyViewPager>
     </LinearLayout>
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </android.support.v4.view.ViewPager>
 </FrameLayout>

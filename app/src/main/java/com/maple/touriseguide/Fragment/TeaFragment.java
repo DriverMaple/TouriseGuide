@@ -8,16 +8,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.maple.touriseguide.Common.MyFragmentAdapter;
 import com.maple.touriseguide.R;
+import com.maple.touriseguide.Util.MyViewPager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by rrr on 2017/10/26.
  */
 
-public class TeaFragment extends Fragment implements View.OnClickListener {
+public class TeaFragment extends Fragment {
     private LinearLayout team;
     private LinearLayout tourise;
+    private MyViewPager viewPager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -30,24 +37,39 @@ public class TeaFragment extends Fragment implements View.OnClickListener {
     private void initView(View view) {
         team = (LinearLayout) view.findViewById(R.id.team);
         tourise = (LinearLayout) view.findViewById(R.id.tourise);
+        viewPager = (MyViewPager) view.findViewById(R.id.vp);
 
-        team.setOnClickListener(this);
-        tourise.setOnClickListener(this);
-    }
+        //构造适配器
+        List<Fragment> fragments = new ArrayList<Fragment>();
+        fragments.add(new ChiMemberFragment());
+        fragments.add(new ChiShareFragment());
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.team:
+        MyFragmentAdapter adapter = new MyFragmentAdapter(getActivity().getSupportFragmentManager(), fragments);
+
+        //设定适配器
+        viewPager.setScanScroll(false);
+        viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(0);
+        tourise.setBackgroundResource(0);
+        team.setBackgroundResource(R.drawable.selector_background_underline);
+
+        team.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(),"1",Toast.LENGTH_SHORT).show();
                 tourise.setBackgroundResource(0);
                 team.setBackgroundResource(R.drawable.selector_background_underline);
-                break;
-            case R.id.tourise:
+                viewPager.setCurrentItem(0);
+            }
+        });
+        tourise.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getActivity(),"2",Toast.LENGTH_SHORT).show();
                 team.setBackgroundResource(0);
                 tourise.setBackgroundResource(R.drawable.selector_background_underline);
-                break;
-            default:
-                break;
-        }
+                viewPager.setCurrentItem(1);
+            }
+        });
     }
 }
