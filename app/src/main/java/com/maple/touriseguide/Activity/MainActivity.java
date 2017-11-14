@@ -1,6 +1,7 @@
 package com.maple.touriseguide.Activity;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,7 +12,9 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.maple.touriseguide.Common.MyFragmentAdapter;
@@ -27,6 +30,19 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private MyViewPager vp;
+    static int pre_color = Color.rgb(210,7,3);
+    static int color = Color.rgb(90,90,90);
+
+    private ImageView img_fir;
+    private ImageView img_sec;
+    private ImageView img_thi;
+    private ImageView img_for;
+
+    private TextView text_fir;
+    private TextView text_sec;
+    private TextView text_thi;
+    private TextView text_for;
+
 
     // 定义一个变量，来标识是否退出
     private static boolean isExit = false;
@@ -53,6 +69,16 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout third = (LinearLayout) findViewById(R.id.third);
         LinearLayout forth = (LinearLayout) findViewById(R.id.forth);
 
+        img_fir = (ImageView) findViewById(R.id.img_fir);
+        img_sec = (ImageView) findViewById(R.id.img_sec);
+        img_thi = (ImageView) findViewById(R.id.img_thi);
+        img_for = (ImageView) findViewById(R.id.img_for);
+
+        text_fir = (TextView) findViewById(R.id.text_fir);
+        text_sec = (TextView) findViewById(R.id.text_sec);
+        text_thi = (TextView) findViewById(R.id.text_thi);
+        text_for = (TextView) findViewById(R.id.text_for);
+
         //构造适配器
         List<Fragment> fragments = new ArrayList<Fragment>();
         fragments.add(new SugFragment());
@@ -67,29 +93,34 @@ public class MainActivity extends AppCompatActivity {
         vp.setScanScroll(false);
         vp.setAdapter(adapter);
         vp.setCurrentItem(0);
+        change(0);
 
         first.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 vp.setCurrentItem(0);
+                change(0);
             }
         });
         second.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 vp.setCurrentItem(1);
+                change(1);
             }
         });
         third.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 vp.setCurrentItem(2);
+                change(2);
             }
         });
         forth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 vp.setCurrentItem(3);
+                change(3);
             }
         });
 
@@ -106,6 +137,38 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    void change(int tab){
+        img_fir.setImageResource(R.mipmap.icon_sug);
+        img_sec.setImageResource(R.mipmap.icon_tem);
+        img_thi.setImageResource(R.mipmap.icon_map);
+        img_for.setImageResource(R.mipmap.icon_cen);
+
+        text_fir.setTextColor(color);
+        text_sec.setTextColor(color);
+        text_thi.setTextColor(color);
+        text_for.setTextColor(color);
+
+        switch (tab){
+            case 0:
+                img_fir.setImageResource(R.mipmap.pre_icon_sug);
+                text_fir.setTextColor(pre_color);
+                break;
+            case 1:
+                img_sec.setImageResource(R.mipmap.pre_icon_tem);
+                text_sec.setTextColor(pre_color);
+                break;
+            case 2:
+                img_thi.setImageResource(R.mipmap.pre_icon_map);
+                text_thi.setTextColor(pre_color);
+                break;
+            case 3:
+                img_for.setImageResource(R.mipmap.pre_icon_cen);
+                text_for.setTextColor(pre_color);
+                break;
+            default:break;
+        }
     }
 
     /**

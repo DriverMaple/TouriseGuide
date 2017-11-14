@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ZoomControls;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -15,6 +17,7 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationConfiguration;
@@ -29,6 +32,8 @@ import com.maple.touriseguide.R;
 public class MapFragment extends Fragment {
     private MapView mMapView = null;
     private BaiduMap mBaiduMap;
+    private ImageView locate_you;
+    private LatLng ll;
     //显示定位点
     private BitmapDescriptor mMarker;
     //定位类
@@ -132,6 +137,25 @@ public class MapFragment extends Fragment {
     private void initView(View view) {
         //地图显示控件 同时需要处理它的生命周期
         mMapView = (MapView) view.findViewById(R.id.bmapView);
+        locate_you = (ImageView) view.findViewById(R.id.locate_you);
+
+        locate_you.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //让地图以被点击的覆盖物为中心
+                MapStatusUpdate status = MapStatusUpdateFactory.newLatLng(ll);
+//                mBaiduMap.setMapStatus(status);
+                //以动画方式更新地图状态，动画耗时 500 ms
+                mBaiduMap.animateMapStatus(status, 500);
+            }
+        });
+        //隐藏地图logo
+        View child = mMapView.getChildAt(1);
+        if (child != null && (child instanceof ImageView || child instanceof ZoomControls)){
+            child.setVisibility(View.INVISIBLE);
+        }
+        //隐藏地图缩放按钮
+        mMapView.showZoomControls(false);
         //获取BadiuMap实例 地图控制器类
         mBaiduMap = mMapView.getMap();
         mLocationClient = new LocationClient(getActivity());
@@ -166,7 +190,7 @@ public class MapFragment extends Fragment {
 
             mBaiduMap.setMyLocationConfiguration(configuration);
 
-            LatLng ll = new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude());
+            ll = new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude());
             //第一次定位需要更新下地图显示状态
             if (isFirstLoc) {
                 isFirstLoc = false;

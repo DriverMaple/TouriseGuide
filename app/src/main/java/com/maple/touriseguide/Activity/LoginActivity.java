@@ -2,6 +2,7 @@ package com.maple.touriseguide.Activity;
 
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,7 +14,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.maple.touriseguide.Common.Global;
+import com.maple.touriseguide.Common.Result;
 import com.maple.touriseguide.R;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.Callback;
+
+import okhttp3.Call;
+import okhttp3.MediaType;
+import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity {
     private Button login;
@@ -56,10 +66,48 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 phone = phone_text.getText().toString();
                 password = password_text.getText().toString();
+                String url = Global.MyIP+"/login";
+                OkHttpUtils
+                        .postString()
+                        .url(url)
+                        .content("{" +
+                                "\"account\":"+"\""+phone+"\","+
+                                "\"password\":"+"\""+password+"\""+
+                                "}")
+                        .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                        .build()
+                        .execute(new Callback() {
+                            @Override
+                            public Object parseNetworkResponse(Response response, int id) throws Exception {
+                                String string = response.body().string();
+                                Result result = new Gson().fromJson(string, Result.class);
+                                if (result.getResult() == 0){
+                                    Looper.prepare();
+                                    Toast.makeText(getApplicationContext(), "再按一次退出程序",
+                                            Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                    Looper.loop();
+                                } else {
+                                    Looper.prepare();
+                                    Toast.makeText(getApplicationContext(), "再按一次退出程序",
+                                            Toast.LENGTH_SHORT).show();
+                                    Looper.loop();
+                                }
+                                return null;
+                            }
 
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+                            @Override
+                            public void onError(Call call, Exception e, int id) {
+                                Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onResponse(Object response, int id) {
+                            }
+                        });
+
             }
         });
         register.setOnClickListener(new View.OnClickListener() {
