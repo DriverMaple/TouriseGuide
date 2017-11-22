@@ -4,100 +4,145 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/null_team"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="您还未加入任何团队"
+                android:textSize="13sp"
+                android:layout_marginBottom="20dp"/>
+            <EditText
+                android:id="@+id/team_name"
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:ems="12"
+                android:hint="请输入团队名"
+                android:inputType="textPersonName"
+                android:layout_marginBottom="15dp"/>
+
+            <EditText
+                android:id="@+id/team_pw"
+                android:layout_width="210dp"
+                android:layout_height="wrap_content"
+                android:ems="12"
+                android:hint="请输入团队口令"
+                android:inputType="textPersonName" />
+
+            <Button
+                android:id="@+id/join_team"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:layout_margin="20dp"
+                android:background="@drawable/shape_corner"
+                android:text="加入团队"
+                android:textColor="#ffffff" />
+        </LinearLayout>
+
 
         <LinearLayout
+            android:id="@+id/have_team"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="#252525"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <!--<RadioGroup
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="50dp"
+                android:background="#252525"
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <RadioButton
+                <!--<RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/team"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/selector_background_underline"
+                        android:button="null"
+                        android:gravity="center_vertical"
+                        android:text="团队成员" />
+
+                    <View
+                        android:layout_width="0px"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="20dp"
+                        android:layout_marginBottom="10dp" />
+
+                    <RadioButton
+                        android:id="@+id/tourise"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/selector_background_underline"
+                        android:button="null"
+                        android:gravity="center_vertical"
+                        android:text="旅途点滴" />
+                </RadioGroup>-->
+
+                <LinearLayout
                     android:id="@+id/team"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/selector_background_underline"
-                    android:button="null"
-                    android:gravity="center_vertical"
-                    android:text="团队成员" />
+                    android:layout_marginRight="10dp"
+                    android:clickable="true"
+                    android:gravity="right">
+
+                    <TextView
+                        android:id="@+id/text_team"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_vertical"
+                        android:text="团队成员"
+                        android:textColor="#ffffff" />
+                </LinearLayout>
 
                 <View
-                    android:layout_width="0px"
+                    android:layout_width="1px"
                     android:layout_height="wrap_content"
                     android:layout_margin="20dp"
                     android:layout_marginBottom="10dp" />
 
-                <RadioButton
+                <LinearLayout
                     android:id="@+id/tourise"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/selector_background_underline"
-                    android:button="null"
-                    android:gravity="center_vertical"
-                    android:text="旅途点滴" />
-            </RadioGroup>-->
+                    android:layout_marginLeft="10dp"
+                    android:clickable="true"
+                    android:gravity="left">
 
-            <LinearLayout
-                android:id="@+id/team"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
-                android:clickable="true"
-                android:gravity="right">
+                    <TextView
+                        android:id="@+id/text_tourise"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_vertical"
+                        android:text="旅途点滴"
+                        android:textColor="#ffffff" />
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/text_team"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:text="团队成员"
-                    android:layout_marginTop="5dp"
-                    android:textColor="#ffffff" />
             </LinearLayout>
 
-            <View
-                android:layout_width="1px"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:layout_marginBottom="10dp" />
+            <com.maple.touriseguide.Util.MyViewPager
+                android:id="@+id/vp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <LinearLayout
-                android:id="@+id/tourise"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:clickable="true"
-                android:gravity="left">
-
-                <TextView
-                    android:id="@+id/text_tourise"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:layout_marginTop="5dp"
-                    android:text="旅途点滴"
-                    android:textColor="#ffffff" />
-            </LinearLayout>
-
+            </com.maple.touriseguide.Util.MyViewPager>
         </LinearLayout>
-
-        <com.maple.touriseguide.Util.MyViewPager
-            android:id="@+id/vp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </com.maple.touriseguide.Util.MyViewPager>
-    </LinearLayout>
+    </FrameLayout>
 </FrameLayout>

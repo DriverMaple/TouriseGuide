@@ -1,23 +1,42 @@
 package com.maple.touriseguide.Fragment;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.mapapi.map.Text;
+import com.maple.touriseguide.Activity.LoginActivity;
+import com.maple.touriseguide.Activity.MainActivity;
+import com.maple.touriseguide.Common.Global;
 import com.maple.touriseguide.Common.MyFragmentAdapter;
+import com.maple.touriseguide.Common.Result;
+import com.maple.touriseguide.Entity.Team;
+import com.maple.touriseguide.Entity.User;
 import com.maple.touriseguide.R;
 import com.maple.touriseguide.Util.MyViewPager;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.Callback;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.MediaType;
+import okhttp3.Response;
 
 /**
  * Created by rrr on 2017/10/26.
@@ -26,17 +45,24 @@ import java.util.List;
 public class TeaFragment extends Fragment {
     private LinearLayout team;
     private LinearLayout tourise;
+    private LinearLayout null_team;
+    private LinearLayout have_team;
+    private Button join_team;
     private MyViewPager viewPager;
     private TextView text_team;
     private TextView text_tourise;
+    private EditText e_team_name;
+    private EditText e_team_pw;
 
     static int pre_color = Color.rgb(210,7,3);
     static int color = Color.rgb(255,255,255);
+    private SharedPreferences sp;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tea, container, false);
+        sp = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         initView(view);
         return view;
     }
@@ -48,6 +74,153 @@ public class TeaFragment extends Fragment {
         text_team = (TextView) view.findViewById(R.id.text_team);
         text_tourise = (TextView) view.findViewById(R.id.text_tourise);
 
+        null_team = (LinearLayout) view.findViewById(R.id.null_team);
+        have_team = (LinearLayout) view.findViewById(R.id.have_team);
+        join_team = (Button) view.findViewById(R.id.join_team);
+        have_team.setVisibility(View.GONE);
+        e_team_name = (EditText) view.findViewById(R.id.team_name);
+        e_team_pw = (EditText) view.findViewById(R.id.team_pw);
+
+        if (sp.getInt("user_id",0) == 2){
+            join_team.setText("创建团队");
+        }
+
+        join_team.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String team_name = e_team_name.getText().toString();
+                String team_pw = e_team_pw.getText().toString();
+                int user_id = sp.getInt("user_id",0);
+
+                if (sp.getInt("user_role",0) == 1){
+                    String url = Global.MyIP+"/createTeam";
+                    OkHttpUtils
+                            .postString()
+                            .url(url)
+                            .content("{" +
+                                    "\"team_name\":"+"\""+team_name+"\","+
+                                    "\"team_pw\":"+"\""+team_pw+"\","+
+                                    "\"user_id\":"+"\""+user_id+"\""+
+                                    "}")
+                            .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                            .build()
+                            .execute(/*new StringCallback() {
+                                @Override
+                                public Object parseNetworkResponse(Response response, int id) throws Exception {
+                                    String string = response.body().string();
+                                    Result result = new Result(string,Team.class,false);
+                                    Team team = (Team) result.getValue();
+                                    if (result.getResult() == 0){
+                                        Looper.prepare();
+                                        Toast.makeText(getActivity().getApplicationContext(), "成功创建！"+team.getTeam_id().toString(),
+                                                Toast.LENGTH_SHORT).show();
+                                        //记住用户名、密码、
+                                        SharedPreferences.Editor editor = sp.edit();
+                                        editor.putInt("team_id",team.getTeam_id());
+                                        editor.commit();
+                                        Looper.loop();
+                                    } else {
+                                        Looper.prepare();
+                                        Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
+                                                Toast.LENGTH_SHORT).show();
+                                        Looper.loop();
+                                    }
+                                    return null;
+                                }
+
+                                @Override
+                                public void onError(Call call, Exception e, int id) {
+                                    Toast.makeText(getActivity().getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onResponse(Object response, int id) {
+                                    //跳转
+                                    Looper.prepare();
+                                    showVp();
+                                    Looper.loop();
+                                }}*/
+                                    new StringCallback() {
+                                        @Override
+                                        public void onError(Call call, Exception e, int id) {
+                                            Toast.makeText(getActivity().getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
+                                        }
+
+                                        @Override
+                                        public void onResponse(String response, int id) {
+                                            Result result = new Result(response,Team.class,false);
+                                            Team team = (Team) result.getValue();
+                                            if (result.getResult() == 0){
+                                                Toast.makeText(getActivity().getApplicationContext(), "成功创建！"+team.getTeam_id().toString(),
+                                                        Toast.LENGTH_SHORT).show();
+                                                //记住用户名、密码、
+                                                SharedPreferences.Editor editor = sp.edit();
+                                                editor.putInt("team_id",team.getTeam_id());
+                                                editor.commit();
+                                                showVp();
+                                            } else {
+                                                Looper.prepare();
+                                                Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
+                                                        Toast.LENGTH_SHORT).show();
+                                                Looper.loop();
+                                            }
+                                        }
+                                    }
+                );
+                } else if (sp.getInt("user_role",0) == 2){
+                    String url = Global.MyIP+"/joinTeam";
+                    OkHttpUtils
+                            .postString()
+                            .url(url)
+                            .content("{" +
+                                    "\"team_name\":"+"\""+team_name+"\","+
+                                    "\"team_pw\":"+"\""+team_pw+"\","+
+                                    "\"user_id\":"+"\""+user_id+"\""+
+                                    "}")
+                            .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                            .build()
+                            .execute(new StringCallback() {
+                                @Override
+                                public void onError(Call call, Exception e, int id) {
+                                    Toast.makeText(getActivity().getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onResponse(String response, int id) {
+                                    Result result = new Result(response,Team.class,false);
+                                    Team team = (Team) result.getValue();
+                                    if (result.getResult() == 0){
+                                        Toast.makeText(getActivity().getApplicationContext(), "成功加入！"+team.getTeam_id().toString(),
+                                                Toast.LENGTH_SHORT).show();
+                                        //记住用户名、密码、
+                                        SharedPreferences.Editor editor = sp.edit();
+                                        editor.putInt("team_id",team.getTeam_id());
+                                        editor.commit();
+                                        showVp();
+                                    } else {
+                                        Looper.prepare();
+                                        Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
+                                                Toast.LENGTH_SHORT).show();
+                                        Looper.loop();
+                                    }
+                                }
+                            });
+                }
+
+
+
+
+
+
+            }
+        });
+
+    }
+
+    private void showVp(){
+        have_team.setVisibility(View.VISIBLE);
+        null_team.setVisibility(View.GONE);
         //构造适配器
         List<Fragment> fragments = new ArrayList<Fragment>();
         fragments.add(new ChiMemberFragment());

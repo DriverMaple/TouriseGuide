@@ -1,6 +1,8 @@
 package com.maple.touriseguide.Activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -11,12 +13,15 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.maple.touriseguide.Common.Global;
 import com.maple.touriseguide.Common.Result;
+import com.maple.touriseguide.Entity.User;
 import com.maple.touriseguide.R;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
@@ -26,11 +31,17 @@ import okhttp3.MediaType;
 import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity {
+    private SharedPreferences sp;
+
     private Button login;
     private EditText phone_text;
     private EditText password_text;
     private TextView register;
+    private RadioGroup role;
+    private RadioButton youke;
+    private RadioButton daoyou;
 
+    private int user_role = 2;
     private String phone;
     private String password;
 
@@ -49,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_login);
+        sp = this.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         initView();
 
 
@@ -59,7 +71,22 @@ public class LoginActivity extends AppCompatActivity {
         phone_text = (EditText) findViewById(R.id.phone);
         password_text = (EditText) findViewById(R.id.password);
         register = (TextView) findViewById(R.id.register);
+        role = (RadioGroup) findViewById(R.id.user_role);
+        youke = (RadioButton) findViewById(R.id.youke);
+        daoyou = (RadioButton) findViewById(R.id.daoyou);
 
+
+        role.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if(R.id.youke == checkedId){
+                    user_role = 2;
+                }
+                else if(R.id.daoyou == checkedId){
+                    user_role = 1;
+                }
+            }
+        });
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,18 +107,28 @@ public class LoginActivity extends AppCompatActivity {
                             @Override
                             public Object parseNetworkResponse(Response response, int id) throws Exception {
                                 String string = response.body().string();
-                                Result result = new Gson().fromJson(string, Result.class);
+                                Result result = new Result(string,User.class,false);
+                                User user = (User) result.getValue();
                                 if (result.getResult() == 0){
                                     Looper.prepare();
-                                    Toast.makeText(getApplicationContext(), "再按一次退出程序",
+                                    Toast.makeText(getApplicationContext(), "欢迎使用FindU"+user.getUser_id().toString(),
                                             Toast.LENGTH_SHORT).show();
+                                    //记住用户名、密码、
+                                    SharedPreferences.Editor editor = sp.edit();
+                                    editor.putInt("user_id",user.getUser_id());
+                                    editor.putInt("user_role",user_role);
+                                    editor.putString("account", phone);
+                                    editor.putString("password",password);
+                                    editor.putBoolean("isLogin",true);
+                                    editor.commit();
+                                    //跳转
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     startActivity(intent);
                                     finish();
                                     Looper.loop();
                                 } else {
                                     Looper.prepare();
-                                    Toast.makeText(getApplicationContext(), "再按一次退出程序",
+                                    Toast.makeText(getApplicationContext(), result.getMessage(),
                                             Toast.LENGTH_SHORT).show();
                                     Looper.loop();
                                 }

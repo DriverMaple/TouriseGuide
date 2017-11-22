@@ -1,11 +1,16 @@
 package com.maple.touriseguide.Fragment;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 import android.widget.ZoomControls;
 
 import com.baidu.location.BDLocation;
@@ -23,7 +28,18 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
+import com.maple.touriseguide.Activity.LoginActivity;
+import com.maple.touriseguide.Activity.MainActivity;
+import com.maple.touriseguide.Common.Global;
+import com.maple.touriseguide.Common.Result;
+import com.maple.touriseguide.Entity.User;
 import com.maple.touriseguide.R;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.Callback;
+
+import okhttp3.Call;
+import okhttp3.MediaType;
+import okhttp3.Response;
 
 /**
  * Created by Maple on 2017/10/25.
@@ -34,6 +50,8 @@ public class MapFragment extends Fragment {
     private BaiduMap mBaiduMap;
     private ImageView locate_you;
     private LatLng ll;
+    private String user_id;
+    private SharedPreferences sp;
     //显示定位点
     private BitmapDescriptor mMarker;
     //定位类
@@ -51,6 +69,8 @@ public class MapFragment extends Fragment {
         SDKInitializer.initialize(getActivity().getApplicationContext());
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_map, container, false);
+        sp = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        user_id = String.valueOf(sp.getInt("user_id",0));
 
         //初始化试图
         initView(view);
@@ -200,6 +220,45 @@ public class MapFragment extends Fragment {
                 //改变地图状态
                 mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
             }
+
+            String url = Global.MyIP+"/location";
+            OkHttpUtils
+                    .postString()
+                    .url(url)
+                    .content("{" +
+                            "\"user_id\":"+"\""+user_id+"\","+
+                            "\"longitude\":"+"\""+String.valueOf(bdLocation.getLongitude())+"\","+
+                            "\"latitude\":"+"\""+String.valueOf(bdLocation.getLatitude())+"\""+
+                            "}")
+                    .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                    .build()
+                    .execute(new Callback() {
+                        @Override
+                        public Object parseNetworkResponse(Response response, int id) throws Exception {
+                            String string = response.body().string();
+                            Result result = new Result(string,null,false);
+                            User user = (User) result.getValue();
+                            if (result.getResult() == 0){
+                            } else {
+                                Looper.prepare();
+                                Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
+                                        Toast.LENGTH_SHORT).show();
+                                Looper.loop();
+                            }
+                            return null;
+                        }
+
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            Looper.prepare();
+                            Toast.makeText(getActivity().getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
+
+                        @Override
+                        public void onResponse(Object response, int id) {
+                        }
+                    });
 
 
         }

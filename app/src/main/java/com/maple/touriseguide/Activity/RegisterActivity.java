@@ -1,8 +1,10 @@
 package com.maple.touriseguide.Activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -12,7 +14,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.maple.touriseguide.Common.Global;
+import com.maple.touriseguide.Common.Result;
 import com.maple.touriseguide.R;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.Callback;
+
+import okhttp3.Call;
+import okhttp3.MediaType;
+import okhttp3.Response;
 
 /**
  * Created by rrr on 2017/10/31.
@@ -85,10 +96,54 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"两次密码不一致！",Toast.LENGTH_SHORT).show();
                     return;
                 }
+                String url = Global.MyIP + "/register";
+                OkHttpUtils
+                        .postString()
+                        .url(url)
+                        .content("{" +
+                                "\"account\":"+"\""+phone+"\","+
+                                "\"password\":"+"\""+passwrod+"\""+
+                                "}")
+                        .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                        .build()
+                        .execute(new Callback() {
+                            @Override
+                            public Object parseNetworkResponse(Response response, int id) throws Exception {
+                                String string = response.body().string();
+                                Result result = new Gson().fromJson(string, Result.class);
+                                if (result.getResult() == 0){
+                                    Looper.prepare();
+                                    Toast.makeText(getApplicationContext(), "注册成功！",
+                                            Toast.LENGTH_SHORT).show();
+                                    //记住用户名、密码、
+                                    /*SharedPreferences.Editor editor = sp.edit();
+                                    editor.putString("account", phone);
+                                    editor.putString("password",password);
+                                    editor.putBoolean("isLogin",true);
+                                    editor.commit();*/
+                                    //跳转
+                                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                    Looper.loop();
+                                } else {
+                                    Looper.prepare();
+                                    Toast.makeText(getApplicationContext(), result.getMessage(),
+                                            Toast.LENGTH_SHORT).show();
+                                    Looper.loop();
+                                }
+                                return null;
+                            }
 
-                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+                            @Override
+                            public void onError(Call call, Exception e, int id) {
+                                Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onResponse(Object response, int id) {
+                            }
+                        });
             }
         });
     }

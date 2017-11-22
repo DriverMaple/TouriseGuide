@@ -154,7 +154,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="120dp"
             android:background="#e75202"
-            android:text="退出应用"
+            android:text="退出登陆"
             android:textColor="#ffffff"
             android:textSize="15sp" />
     </LinearLayout>

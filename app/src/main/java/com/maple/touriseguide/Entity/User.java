@@ -10,6 +10,16 @@ public class User {
     private String head_jpg;
     private String motto;
 
+    private Integer user_role;//1导游，2游客
+
+    public Integer getUser_role() {
+        return user_role;
+    }
+
+    public void setUser_role(Integer user_role) {
+        this.user_role = user_role;
+    }
+
     public Integer getUser_id() {
         return user_id;
     }
