@@ -32,10 +32,10 @@
 
             <ImageView
                 android:id="@+id/img_fir"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="37dp"
+                android:layout_height="37dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="2dp"
                 android:src="@mipmap/icon_sug" />
 
             <TextView
@@ -59,10 +59,10 @@
 
             <ImageView
                 android:id="@+id/img_sec"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="37dp"
+                android:layout_height="37dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="2dp"
                 android:src="@mipmap/icon_tem" />
 
             <TextView
@@ -76,6 +76,21 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/logo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/img_logo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@mipmap/logo"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/third"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -84,10 +99,10 @@
 
             <ImageView
                 android:id="@+id/img_thi"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="37dp"
+                android:layout_height="37dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="2dp"
                 android:src="@mipmap/icon_map" />
 
             <TextView
@@ -109,10 +124,10 @@
 
             <ImageView
                 android:id="@+id/img_for"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="37dp"
+                android:layout_height="37dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="2dp"
                 android:src="@mipmap/icon_cen" />
 
             <TextView
