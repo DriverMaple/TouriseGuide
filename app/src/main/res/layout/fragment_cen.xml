@@ -32,6 +32,7 @@
             android:orientation="horizontal">
 
             <com.maple.touriseguide.Util.CircleImageView
+                android:id="@+id/head_img"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_centerInParent="true"
@@ -50,6 +51,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
@@ -58,6 +60,7 @@
                     android:textSize="20sp" />
 
                 <TextView
+                    android:id="@+id/motto"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="follow your heart,to be yourself..."
@@ -68,12 +71,12 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0.1dp"
-            android:background="#555555" />
+            android:layout_height="1dp"
+            android:background="#c2c2c2" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp">
+            android:layout_height="50dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -81,78 +84,78 @@
                 android:layout_marginLeft="30dp"
                 android:gravity="center"
                 android:text="基本信息"
-                android:textColor="#333333"
-                android:textSize="15sp" />
+                android:textColor="#1a1a1a"
+                android:textSize="17sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0.1dp"
-            android:background="#555555" />
+            android:layout_height="1dp"
+            android:background="#c2c2c2" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp">
+            android:layout_height="50dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="30dp"
                 android:gravity="center"
-                android:text="基本信息"
-                android:textColor="#333333"
-                android:textSize="15sp" />
+                android:text="系统设置"
+                android:textColor="#1a1a1a"
+                android:textSize="17sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0.1dp"
-            android:background="#555555" />
+            android:layout_height="1dp"
+            android:background="#c2c2c2" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp">
+            android:layout_height="50dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="30dp"
                 android:gravity="center"
-                android:text="基本信息"
-                android:textColor="#333333"
-                android:textSize="15sp" />
+                android:text="修改密码"
+                android:textColor="#1a1a1a"
+                android:textSize="17sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0.1dp"
-            android:background="#555555" />
+            android:layout_height="1dp"
+            android:background="#c2c2c2" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp">
+            android:layout_height="50dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="30dp"
                 android:gravity="center"
-                android:text="基本信息"
-                android:textColor="#333333"
-                android:textSize="15sp" />
+                android:text="版本信息"
+                android:textColor="#1a1a1a"
+                android:textSize="17sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0.1dp"
-            android:background="#555555" />
+            android:layout_height="1dp"
+            android:background="#c2c2c2" />
 
         <Button
             android:id="@+id/exist"
             android:layout_width="210dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
-            android:layout_marginTop="120dp"
+            android:layout_marginTop="60dp"
             android:background="#e75202"
             android:text="退出登陆"
             android:textColor="#ffffff"
