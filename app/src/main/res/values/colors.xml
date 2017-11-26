@@ -3,6 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="transparent">#00000000</color>
     <!--白色  标题 背景-->
     <color name="colorBackground">#ffffff</color>
     <!--蓝色  选中下划线 -->

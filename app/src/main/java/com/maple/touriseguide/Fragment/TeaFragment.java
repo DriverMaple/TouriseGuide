@@ -77,10 +77,19 @@ public class TeaFragment extends Fragment {
         null_team = (LinearLayout) view.findViewById(R.id.null_team);
         have_team = (LinearLayout) view.findViewById(R.id.have_team);
         join_team = (Button) view.findViewById(R.id.join_team);
-        have_team.setVisibility(View.GONE);
         e_team_name = (EditText) view.findViewById(R.id.team_name);
         e_team_pw = (EditText) view.findViewById(R.id.team_pw);
 
+        if (sp.getInt("team_id",0) == 0){
+            showNullTeam();
+        } else {
+            showVp();
+        }
+    }
+
+    private void showNullTeam() {
+        have_team.setVisibility(View.GONE);
+        null_team.setVisibility(View.VISIBLE);
         if (sp.getInt("user_id",0) == 2){
             join_team.setText("创建团队");
         }
@@ -105,97 +114,61 @@ public class TeaFragment extends Fragment {
                                     "}")
                             .mediaType(MediaType.parse("application/json; charset=utf-8"))
                             .build()
-                            .execute(/*new StringCallback() {
-                                @Override
-                                public Object parseNetworkResponse(Response response, int id) throws Exception {
-                                    String string = response.body().string();
-                                    Result result = new Result(string,Team.class,false);
-                                    Team team = (Team) result.getValue();
-                                    if (result.getResult() == 0){
-                                        Looper.prepare();
-                                        Toast.makeText(getActivity().getApplicationContext(), "成功创建！"+team.getTeam_id().toString(),
-                                                Toast.LENGTH_SHORT).show();
-                                        //记住用户名、密码、
-                                        SharedPreferences.Editor editor = sp.edit();
-                                        editor.putInt("team_id",team.getTeam_id());
-                                        editor.commit();
-                                        Looper.loop();
-                                    } else {
-                                        Looper.prepare();
-                                        Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
-                                                Toast.LENGTH_SHORT).show();
-                                        Looper.loop();
-                                    }
-                                    return null;
-                                }
+                            .execute(new StringCallback() {
+                                         @Override
+                                         public void onError(Call call, Exception e, int id) {
+                                             Toast.makeText(getActivity().getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
+                                         }
 
-                                @Override
-                                public void onError(Call call, Exception e, int id) {
-                                    Toast.makeText(getActivity().getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
-                                }
-
-                                @Override
-                                public void onResponse(Object response, int id) {
-                                    //跳转
-                                    Looper.prepare();
-                                    showVp();
-                                    Looper.loop();
-                                }}*/
-                                    new StringCallback() {
-                                        @Override
-                                        public void onError(Call call, Exception e, int id) {
-                                            Toast.makeText(getActivity().getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
-                                        }
-
-                                        @Override
-                                        public void onResponse(String response, int id) {
-                                            Result result = new Result(response,Team.class,false);
-                                            Team team = (Team) result.getValue();
-                                            if (result.getResult() == 0){
-                                                Toast.makeText(getActivity().getApplicationContext(), "成功创建！"+team.getTeam_id().toString(),
-                                                        Toast.LENGTH_SHORT).show();
-                                                //记住用户名、密码、
-                                                SharedPreferences.Editor editor = sp.edit();
-                                                editor.putInt("team_id",team.getTeam_id());
-                                                editor.commit();
-                                                showVp();
-                                            } else {
-                                                Looper.prepare();
-                                                Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
-                                                        Toast.LENGTH_SHORT).show();
-                                                Looper.loop();
-                                            }
-                                        }
-                                    }
-                );
-                } else if (sp.getInt("user_role",0) == 2){
-                    String url = Global.MyIP+"/joinTeam";
+                                         @Override
+                                         public void onResponse(String response, int id) {
+                                             Result result = new Result(response,Team.class,false);
+                                             Team team = (Team) result.getValue();
+                                             if (result.getResult() == 0){
+                                                 Toast.makeText(getActivity().getApplicationContext(), "成功创建！"+team.getTeam_id().toString(),
+                                                         Toast.LENGTH_SHORT).show();
+                                                 //记住用户名、密码、
+                                                 SharedPreferences.Editor editor = sp.edit();
+                                                 editor.putInt("team_id",team.getTeam_id());
+                                                 editor.commit();
+                                                 showVp();
+                                             } else {
+                                                 Looper.prepare();
+                                                 Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
+                                                         Toast.LENGTH_SHORT).show();
+                                                 Looper.loop();
+                                             }
+                                         }
+                                     }
+                            );
+                } else if (sp.getInt("user_role",0) == 2) {
+                    String url = Global.MyIP + "/joinTeam";
                     OkHttpUtils
                             .postString()
                             .url(url)
                             .content("{" +
-                                    "\"team_name\":"+"\""+team_name+"\","+
-                                    "\"team_pw\":"+"\""+team_pw+"\","+
-                                    "\"user_id\":"+"\""+user_id+"\""+
+                                    "\"team_name\":" + "\"" + team_name + "\"," +
+                                    "\"team_pw\":" + "\"" + team_pw + "\"," +
+                                    "\"user_id\":" + "\"" + user_id + "\"" +
                                     "}")
                             .mediaType(MediaType.parse("application/json; charset=utf-8"))
                             .build()
                             .execute(new StringCallback() {
                                 @Override
                                 public void onError(Call call, Exception e, int id) {
-                                    Toast.makeText(getActivity().getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity().getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
                                 }
 
                                 @Override
                                 public void onResponse(String response, int id) {
-                                    Result result = new Result(response,Team.class,false);
+                                    Result result = new Result(response, Team.class, false);
                                     Team team = (Team) result.getValue();
-                                    if (result.getResult() == 0){
-                                        Toast.makeText(getActivity().getApplicationContext(), "成功加入！"+team.getTeam_id().toString(),
+                                    if (result.getResult() == 0) {
+                                        Toast.makeText(getActivity().getApplicationContext(), "成功加入！" + team.getTeam_id().toString(),
                                                 Toast.LENGTH_SHORT).show();
                                         //记住用户名、密码、
                                         SharedPreferences.Editor editor = sp.edit();
-                                        editor.putInt("team_id",team.getTeam_id());
+                                        editor.putInt("team_id", team.getTeam_id());
                                         editor.commit();
                                         showVp();
                                     } else {
@@ -207,15 +180,8 @@ public class TeaFragment extends Fragment {
                                 }
                             });
                 }
-
-
-
-
-
-
             }
         });
-
     }
 
     private void showVp(){

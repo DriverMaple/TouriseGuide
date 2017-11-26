@@ -25,8 +25,11 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
+import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.maple.touriseguide.Activity.LoginActivity;
 import com.maple.touriseguide.Activity.MainActivity;
@@ -34,8 +37,13 @@ import com.maple.touriseguide.Common.Global;
 import com.maple.touriseguide.Common.Result;
 import com.maple.touriseguide.Entity.User;
 import com.maple.touriseguide.R;
+import com.maple.touriseguide.Util.MarkerInfoUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.MediaType;
@@ -68,9 +76,9 @@ public class MapFragment extends Fragment {
         //注意该方法要再setContentView方法之前实现
         SDKInitializer.initialize(getActivity().getApplicationContext());
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_map, container, false);
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
         sp = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-        user_id = String.valueOf(sp.getInt("user_id",0));
+        user_id = String.valueOf(sp.getInt("user_id", 0));
 
         //初始化试图
         initView(view);
@@ -171,7 +179,7 @@ public class MapFragment extends Fragment {
         });
         //隐藏地图logo
         View child = mMapView.getChildAt(1);
-        if (child != null && (child instanceof ImageView || child instanceof ZoomControls)){
+        if (child != null && (child instanceof ImageView || child instanceof ZoomControls)) {
             child.setVisibility(View.INVISIBLE);
         }
         //隐藏地图缩放按钮
@@ -187,7 +195,8 @@ public class MapFragment extends Fragment {
     }
 
     private class MyLocationListener implements BDLocationListener {
-
+        List<MarkerInfoUtil> infos = new ArrayList<>();
+        MarkerInfoUtil info = new MarkerInfoUtil();
         @Override
         public void onReceiveLocation(BDLocation bdLocation) {
             //构造定位数据
@@ -210,7 +219,7 @@ public class MapFragment extends Fragment {
 
             mBaiduMap.setMyLocationConfiguration(configuration);
 
-            ll = new LatLng(bdLocation.getLatitude(),bdLocation.getLongitude());
+            ll = new LatLng(bdLocation.getLatitude(), bdLocation.getLongitude());
             //第一次定位需要更新下地图显示状态
             if (isFirstLoc) {
                 isFirstLoc = false;
@@ -220,15 +229,19 @@ public class MapFragment extends Fragment {
                 //改变地图状态
                 mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
             }
+            MyPosition(bdLocation);
+            showGuider();
+        }
 
-            String url = Global.MyIP+"/location";
+        private void MyPosition(BDLocation bdLocation) {
+            String url = Global.MyIP + "/location";
             OkHttpUtils
                     .postString()
                     .url(url)
                     .content("{" +
-                            "\"user_id\":"+"\""+user_id+"\","+
-                            "\"longitude\":"+"\""+String.valueOf(bdLocation.getLongitude())+"\","+
-                            "\"latitude\":"+"\""+String.valueOf(bdLocation.getLatitude())+"\""+
+                            "\"user_id\":" + "\"" + user_id + "\"," +
+                            "\"longitude\":" + "\"" + String.valueOf(bdLocation.getLongitude()) + "\"," +
+                            "\"latitude\":" + "\"" + String.valueOf(bdLocation.getLatitude()) + "\"" +
                             "}")
                     .mediaType(MediaType.parse("application/json; charset=utf-8"))
                     .build()
@@ -236,9 +249,8 @@ public class MapFragment extends Fragment {
                         @Override
                         public Object parseNetworkResponse(Response response, int id) throws Exception {
                             String string = response.body().string();
-                            Result result = new Result(string,null,false);
-                            User user = (User) result.getValue();
-                            if (result.getResult() == 0){
+                            Result result = new Result(string, null, false);
+                            if (result.getResult() == 0) {
                             } else {
                                 Looper.prepare();
                                 Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
@@ -251,7 +263,7 @@ public class MapFragment extends Fragment {
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             Looper.prepare();
-                            Toast.makeText(getActivity().getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity().getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
                             Looper.loop();
                         }
 
@@ -259,8 +271,74 @@ public class MapFragment extends Fragment {
                         public void onResponse(Object response, int id) {
                         }
                     });
+        }
 
+        private void showGuider() {
+            String url = Global.MyIP + "/getGuide";
 
+            OkHttpUtils
+                    .postString()
+                    .url(url)
+                    .content("{" +
+                            "\"team_id\":" + "\"" + sp.getInt("team_id", 0) + "\"" +
+                            "}")
+                    .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                    .build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            Looper.prepare();
+                            Toast.makeText(getActivity().getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            Result result = new Result(response, User.class, false);
+                            User user = (User) result.getValue();
+                            if (result.getResult() == 0) {
+                                infos.clear();
+                                infos.add(new MarkerInfoUtil(user.getLatitude(),user.getLongitude(),user.getNick_name(),user.getAccount()));
+                                addOverlay(infos);
+                            } else {
+                                Looper.prepare();
+                                Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
+                                        Toast.LENGTH_SHORT).show();
+                                Looper.loop();
+                            }
+                        }
+                    });
+        }
+
+        //显示marker
+        private void addOverlay(List<MarkerInfoUtil> infos) {
+            //清空地图
+            mBaiduMap.clear();
+            //创建marker的显示图标
+            BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.rmap_icon);
+            LatLng latLng = null;
+            Marker marker;
+            OverlayOptions options;
+            for(MarkerInfoUtil info:infos){
+                //获取经纬度
+                latLng = new LatLng(info.getLatitude(),info.getLongitude());
+                //设置marker
+                options = new MarkerOptions()
+                        .position(latLng)//设置位置
+                        .icon(bitmap)//设置图标样式
+                        .zIndex(9) // 设置marker所在层级
+                        .draggable(true); // 设置手势拖拽;
+                //添加marker
+                marker = (Marker) mBaiduMap.addOverlay(options);
+                //使用marker携带info信息，当点击事件的时候可以通过marker获得info信息
+                Bundle bundle = new Bundle();
+                //info必须实现序列化接口
+                bundle.putSerializable("info", info);
+                marker.setExtraInfo(bundle);
+            }
+            //将地图显示在最后一个marker的位置
+            MapStatusUpdate msu = MapStatusUpdateFactory.newLatLng(latLng);
+            mBaiduMap.setMapStatus(msu);
         }
     }
 }

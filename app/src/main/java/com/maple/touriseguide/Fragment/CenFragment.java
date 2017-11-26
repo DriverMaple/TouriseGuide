@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.maple.touriseguide.Activity.LoginActivity;
 import com.maple.touriseguide.Activity.MainActivity;
@@ -22,6 +23,7 @@ import com.maple.touriseguide.Util.MyViewPager;
 public class CenFragment extends Fragment{
     private Button exists;
     private SharedPreferences sp;
+    private ImageView exit;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -33,6 +35,14 @@ public class CenFragment extends Fragment{
 
     private void initView(View view) {
         exists = (Button) view.findViewById(R.id.exist);
+        exit = (ImageView) view.findViewById(R.id.exit);
+
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.exit(0);
+            }
+        });
 
         exists.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,6 +53,7 @@ public class CenFragment extends Fragment{
                 editor.remove("password");
                 editor.remove("user_id");
                 editor.remove("user_role");
+                editor.remove("team_id");
                 editor.putBoolean("isLogin",false);
                 editor.commit();
 

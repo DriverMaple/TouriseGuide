@@ -1,10 +1,14 @@
 package com.maple.touriseguide.Activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -15,21 +19,30 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.maple.touriseguide.Common.Global;
 import com.maple.touriseguide.Common.MyFragmentAdapter;
+import com.maple.touriseguide.Common.Result;
+import com.maple.touriseguide.Entity.Team;
 import com.maple.touriseguide.Fragment.CenFragment;
 import com.maple.touriseguide.Fragment.SugFragment;
 import com.maple.touriseguide.Fragment.MapFragment;
 import com.maple.touriseguide.Fragment.TeaFragment;
 import com.maple.touriseguide.R;
+import com.maple.touriseguide.Util.CircleImageView;
 import com.maple.touriseguide.Util.MyViewPager;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.MediaType;
+
 public class MainActivity extends AppCompatActivity {
     private MyViewPager vp;
-    static int pre_color = Color.rgb(210,7,3);
-    static int color = Color.rgb(90,90,90);
+    static int pre_color = Color.rgb(210, 7, 3);
+    static int color = Color.rgb(90, 90, 90);
 
     private ImageView img_fir;
     private ImageView img_sec;
@@ -40,6 +53,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView text_sec;
     private TextView text_thi;
     private TextView text_for;
+
+    private CircleImageView urgent;
+    private SharedPreferences sp;
+    //Context mContext = getApplicationContext();
 
 
     // 定义一个变量，来标识是否退出
@@ -57,14 +74,55 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-
+        sp = this.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        checkTeam();
         initView();
+    }
+
+    private void checkTeam() {
+        String url = Global.MyIP + "/getTeam";
+        OkHttpUtils
+                .postString()
+                .url(url)
+                .content("{" +
+                        "\"user_id\":" + "\"" + sp.getInt("user_id", 0) + "\"" +
+                        "}")
+                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Looper.prepare();
+                        Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Result result = new Result(response, Team.class, false);
+                        Team team = (Team) result.getValue();
+                        if (result.getResult() == 0) {
+                            if (null != team) {
+                                SharedPreferences.Editor editor = sp.edit();
+                                //存储team_id
+                                editor.putInt("team_id", team.getTeam_id());
+                                editor.putString("guider_phone", team.getGuider_phone());
+                                editor.commit();
+                            }
+                        } else {
+                            Looper.prepare();
+                            Toast.makeText(getApplicationContext(), result.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
+                    }
+                });
     }
 
     private void initView() {
         LinearLayout first = (LinearLayout) findViewById(R.id.first);
         LinearLayout second = (LinearLayout) findViewById(R.id.second);
-        LinearLayout third = (LinearLayout) findViewById(R.id.third);
+        final LinearLayout third = (LinearLayout) findViewById(R.id.third);
         LinearLayout forth = (LinearLayout) findViewById(R.id.forth);
 
         img_fir = (ImageView) findViewById(R.id.img_fir);
@@ -76,6 +134,8 @@ public class MainActivity extends AppCompatActivity {
         text_sec = (TextView) findViewById(R.id.text_sec);
         text_thi = (TextView) findViewById(R.id.text_thi);
         text_for = (TextView) findViewById(R.id.text_for);
+
+        urgent = (CircleImageView) findViewById(R.id.urgent);
 
         //构造适配器
         List<Fragment> fragments = new ArrayList<Fragment>();
@@ -122,22 +182,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        vp.setOnClickListener(new View.OnClickListener() {
-            long[] mHints = new long[3];//初始全部为0
+        urgent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //将mHints数组内的所有元素左移一个位置
-                System.arraycopy(mHints, 1, mHints, 0, mHints.length - 1);
-                //获得当前系统已经启动的时间
-                mHints[mHints.length - 1] = SystemClock.uptimeMillis();
-                if (SystemClock.uptimeMillis() - mHints[0] <= 500)
-                    Toast.makeText(getApplicationContext(), "当你点击三次之后才会出现", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "长按两秒紧急呼叫", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        urgent.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(getApplicationContext(), "紧急呼叫", Toast.LENGTH_SHORT).show();
+                showDialog();
+                return true;
             }
         });
 
     }
 
-    void change(int tab){
+    void change(int tab) {
         img_fir.setImageResource(R.mipmap.icon_sug);
         img_sec.setImageResource(R.mipmap.icon_tem);
         img_thi.setImageResource(R.mipmap.icon_map);
@@ -148,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
         text_thi.setTextColor(color);
         text_for.setTextColor(color);
 
-        switch (tab){
+        switch (tab) {
             case 0:
                 img_fir.setImageResource(R.mipmap.pre_icon_sug);
                 text_fir.setTextColor(pre_color);
@@ -165,7 +228,8 @@ public class MainActivity extends AppCompatActivity {
                 img_for.setImageResource(R.mipmap.pre_icon_cen);
                 text_for.setTextColor(pre_color);
                 break;
-            default:break;
+            default:
+                break;
         }
     }
 
@@ -196,5 +260,38 @@ public class MainActivity extends AppCompatActivity {
             finish();
             System.exit(0);
         }
+    }
+
+    private void showDialog() {
+        final UrgentActivity dialog = new UrgentActivity(this);
+        dialog.show();
+        dialog.setCancleButton(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setPoliceButton(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+"10000"));
+                    startActivity(intent);
+                }catch (SecurityException e){
+
+                }
+            }
+        });
+        dialog.setTouriseButton(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+sp.getString("guider_phone","")));
+                    startActivity(intent);
+                }catch (SecurityException e){
+
+                }
+            }
+        });
     }
 }

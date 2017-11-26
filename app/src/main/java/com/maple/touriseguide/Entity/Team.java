@@ -8,6 +8,15 @@ public class Team {
     private String team_name;
     private String team_pw;
     private Integer user_id;
+    private String guider_phone;
+
+    public String getGuider_phone() {
+        return guider_phone;
+    }
+
+    public void setGuider_phone(String guider_phone) {
+        this.guider_phone = guider_phone;
+    }
 
     public Integer getUser_id() {
         return user_id;
