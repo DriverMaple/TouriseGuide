@@ -6,10 +6,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ZoomControls;
 
@@ -21,6 +23,7 @@ import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.InfoWindow;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
@@ -230,6 +233,11 @@ public class MapFragment extends Fragment {
                 mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
             }
             MyPosition(bdLocation);
+            if (sp.getInt("user_role",0) == 2){
+                showGuider();
+            } else {
+                showTourise();
+            }
             showGuider();
         }
 
@@ -312,6 +320,46 @@ public class MapFragment extends Fragment {
                     });
         }
 
+        private void showTourise() {
+            String url = Global.MyIP + "/getTourise";
+
+            OkHttpUtils
+                    .postString()
+                    .url(url)
+                    .content("{" +
+                            "\"team_id\":" + "\"" + sp.getInt("team_id", 0) + "\"" +
+                            "}")
+                    .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                    .build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            call.cancel();
+                            Looper.prepare();
+                            Toast.makeText(getActivity().getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            Result result = new Result(response, User.class, true);
+                            List<User> users = (List<User>) result.getValue();
+                            if (result.getResult() == 0) {
+                                infos.clear();
+                                for (User user:users){
+                                    infos.add(new MarkerInfoUtil(user.getLatitude(),user.getLongitude(),user.getNick_name(),user.getAccount()));
+                                }
+                                addOverlay(infos);
+                            } else {
+                                Looper.prepare();
+                                Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
+                                        Toast.LENGTH_SHORT).show();
+                                Looper.loop();
+                            }
+                        }
+                    });
+        }
+
         //显示marker
         private void addOverlay(List<MarkerInfoUtil> infos) {
             //清空地图
@@ -341,6 +389,48 @@ public class MapFragment extends Fragment {
             //将地图显示在最后一个marker的位置
             //MapStatusUpdate msu = MapStatusUpdateFactory.newLatLng(latLng);
             //mBaiduMap.setMapStatus(msu);
+
+            //添加marker点击事件的监听
+            /*mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    //从marker中获取info信息
+                    Bundle bundle = marker.getExtraInfo();
+                    MarkerInfoUtil infoUtil = (MarkerInfoUtil) bundle.getSerializable("info");
+                    //将信息显示在界面上
+                    ImageView iv_img = (ImageView)rl_marker.findViewById(R.id.iv_img);
+                    iv_img.setBackgroundResource(infoUtil.getImgId());
+                    TextView tv_name = (TextView)rl_marker.findViewById(R.id.tv_name);
+                    tv_name.setText(infoUtil.getName());
+                    TextView tv_description = (TextView)rl_marker.findViewById(R.id.tv_description);
+                    tv_description.setText(infoUtil.getDescription());
+                    //将布局显示出来
+                    rl_marker.setVisibility(View.VISIBLE);
+
+                    //infowindow中的布局
+                    TextView tv = new TextView(MainActivity.this);
+                    tv.setBackgroundResource(R.drawable.infowindow);
+                    tv.setPadding(20, 10, 20, 20);
+                    tv.setTextColor(android.graphics.Color.WHITE);
+                    tv.setText(infoUtil.getUser_name());
+                    tv.setGravity(Gravity.CENTER);
+                    bitmapDescriptor = BitmapDescriptorFactory.fromView(tv);
+                    //infowindow位置
+                    LatLng latLng = new LatLng(infoUtil.getLatitude(), infoUtil.getLongitude());
+                    //infowindow点击事件
+                    InfoWindow.OnInfoWindowClickListener listener = new InfoWindow.OnInfoWindowClickListener() {
+                        @Override
+                        public void onInfoWindowClick() {
+                            //隐藏infowindow
+                            mBaiduMap.hideInfoWindow();
+                        }
+                    };
+                    //显示infowindow
+                    InfoWindow infoWindow = new InfoWindow(bitmapDescriptor, latLng, -47, listener);
+                    mBaiduMap.showInfoWindow(infoWindow);
+                    return true;
+                }
+            });*/
         }
     }
 }

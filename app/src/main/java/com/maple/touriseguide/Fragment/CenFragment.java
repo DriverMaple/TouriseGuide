@@ -54,6 +54,7 @@ public class CenFragment extends Fragment{
                 editor.remove("user_id");
                 editor.remove("user_role");
                 editor.remove("team_id");
+                editor.remove("guider_phone");
                 editor.putBoolean("isLogin",false);
                 editor.commit();
 
