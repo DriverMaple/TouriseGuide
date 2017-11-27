@@ -32,6 +32,7 @@ import com.maple.touriseguide.Util.CircleImageView;
 import com.maple.touriseguide.Util.MyViewPager;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+import com.zhy.http.okhttp.request.RequestCall;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
+                        call.cancel();
                         Looper.prepare();
                         Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
                         Looper.loop();
@@ -293,5 +295,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

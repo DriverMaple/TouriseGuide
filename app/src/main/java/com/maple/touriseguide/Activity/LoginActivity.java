@@ -137,7 +137,10 @@ public class LoginActivity extends AppCompatActivity {
 
                             @Override
                             public void onError(Call call, Exception e, int id) {
+                                call.cancel();
+                                Looper.prepare();
                                 Toast.makeText(getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
+                                Looper.loop();
                             }
 
                             @Override

@@ -1,10 +1,8 @@
 package com.maple.touriseguide.Fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
@@ -17,18 +15,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baidu.mapapi.map.Text;
-import com.maple.touriseguide.Activity.LoginActivity;
-import com.maple.touriseguide.Activity.MainActivity;
 import com.maple.touriseguide.Common.Global;
 import com.maple.touriseguide.Common.MyFragmentAdapter;
 import com.maple.touriseguide.Common.Result;
 import com.maple.touriseguide.Entity.Team;
-import com.maple.touriseguide.Entity.User;
 import com.maple.touriseguide.R;
 import com.maple.touriseguide.Util.MyViewPager;
 import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.Callback;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
@@ -36,7 +29,6 @@ import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.MediaType;
-import okhttp3.Response;
 
 /**
  * Created by rrr on 2017/10/26.
@@ -117,7 +109,10 @@ public class TeaFragment extends Fragment {
                             .execute(new StringCallback() {
                                          @Override
                                          public void onError(Call call, Exception e, int id) {
+                                             call.cancel();
+                                             Looper.prepare();
                                              Toast.makeText(getActivity().getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
+                                             Looper.loop();
                                          }
 
                                          @Override
@@ -156,7 +151,11 @@ public class TeaFragment extends Fragment {
                             .execute(new StringCallback() {
                                 @Override
                                 public void onError(Call call, Exception e, int id) {
+                                    call.cancel();
+                                    /*Looper.prepare();
                                     Toast.makeText(getActivity().getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                                    Looper.loop();*/
+                                    e.printStackTrace();
                                 }
 
                                 @Override

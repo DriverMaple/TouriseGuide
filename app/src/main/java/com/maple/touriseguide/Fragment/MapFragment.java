@@ -262,6 +262,7 @@ public class MapFragment extends Fragment {
 
                         @Override
                         public void onError(Call call, Exception e, int id) {
+                            call.cancel();
                             Looper.prepare();
                             Toast.makeText(getActivity().getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
                             Looper.loop();
@@ -287,6 +288,7 @@ public class MapFragment extends Fragment {
                     .execute(new StringCallback() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
+                            call.cancel();
                             Looper.prepare();
                             Toast.makeText(getActivity().getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
                             Looper.loop();
@@ -315,7 +317,7 @@ public class MapFragment extends Fragment {
             //清空地图
             mBaiduMap.clear();
             //创建marker的显示图标
-            BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.rmap_icon);
+            BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.bmap_icon);
             LatLng latLng = null;
             Marker marker;
             OverlayOptions options;
@@ -337,8 +339,8 @@ public class MapFragment extends Fragment {
                 marker.setExtraInfo(bundle);
             }
             //将地图显示在最后一个marker的位置
-            MapStatusUpdate msu = MapStatusUpdateFactory.newLatLng(latLng);
-            mBaiduMap.setMapStatus(msu);
+            //MapStatusUpdate msu = MapStatusUpdateFactory.newLatLng(latLng);
+            //mBaiduMap.setMapStatus(msu);
         }
     }
 }
