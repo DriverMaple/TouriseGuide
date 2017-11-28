@@ -63,7 +63,7 @@ public class InfoWindowUtil {
 
         LatLng latLng = new LatLng(info.getLatitude(),info.getLongitude());
 
-        InfoWindow infoWindow = new InfoWindow(view, latLng, -47);
+        InfoWindow infoWindow = new InfoWindow(view, latLng, -75);
 
         return infoWindow;
     }

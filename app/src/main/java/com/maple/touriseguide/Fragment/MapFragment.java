@@ -71,6 +71,9 @@ public class MapFragment extends Fragment {
     //是否是第一次定位
     private boolean isFirstLoc = true;
 
+    //是否清空地图
+    private boolean isFresh = true;
+
     //定位回调
     private BDLocationListener mBDLocationListener = new MyLocationListener();
 
@@ -239,7 +242,6 @@ public class MapFragment extends Fragment {
             } else {
                 showTourise();
             }
-            showGuider();
         }
 
         private void MyPosition(BDLocation bdLocation) {
@@ -310,7 +312,9 @@ public class MapFragment extends Fragment {
                             if (result.getResult() == 0) {
                                 infos.clear();
                                 infos.add(new MarkerInfoUtil(user.getLatitude(),user.getLongitude(),user.getNick_name(),user.getAccount()));
-                                addOverlay(infos);
+                                if (isFresh){
+                                    addOverlay(infos);
+                                }
                             } else {
                                 Looper.prepare();
                                 Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
@@ -350,7 +354,9 @@ public class MapFragment extends Fragment {
                                 for (User user:users){
                                     infos.add(new MarkerInfoUtil(user.getLatitude(),user.getLongitude(),user.getNick_name(),user.getAccount()));
                                 }
-                                addOverlay(infos);
+                                if (isFresh){
+                                    addOverlay(infos);
+                                }
                             } else {
                                 Looper.prepare();
                                 Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
@@ -364,7 +370,7 @@ public class MapFragment extends Fragment {
         //显示marker
         private void addOverlay(List<MarkerInfoUtil> infos) {
             //清空地图
-            //mBaiduMap.clear();
+            mBaiduMap.clear();
             //创建marker的显示图标
             BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.bmap_icon);
             LatLng latLng = null;
@@ -420,17 +426,17 @@ public class MapFragment extends Fragment {
                     bitmapDescriptor = BitmapDescriptorFactory.fromView(tv);
                     //infowindow位置
                     LatLng latLng = new LatLng(infoUtil.getLatitude(), infoUtil.getLongitude());
-                    //infowindow点击事件
+                    //infowindow点击事件*/
                     InfoWindow.OnInfoWindowClickListener listener = new InfoWindow.OnInfoWindowClickListener() {
                         @Override
                         public void onInfoWindowClick() {
                             //隐藏infowindow
                             mBaiduMap.hideInfoWindow();
+                            isFresh = true;
                         }
                     };
-                    //显示infowindow
-                    InfoWindow infoWindow = new InfoWindow(bitmapDescriptor, latLng, -47, listener);*/
                     mBaiduMap.showInfoWindow(myInfoWindow.init());
+                    isFresh = false;
                     return true;
                 }
             });

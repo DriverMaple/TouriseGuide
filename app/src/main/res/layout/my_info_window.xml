@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="102dp"
+    android:layout_height="wrap_content"
     android:background="#0000"
     android:orientation="horizontal">
     <LinearLayout
         android:layout_width="209dp"
-        android:layout_height="102dp"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@mipmap/info_window">
         <TextView
             android:id="@+id/name"
             android:layout_width="match_parent"
@@ -57,7 +58,8 @@
                     android:layout_width="17dp"
                     android:layout_height="18dp"
                     android:layout_marginLeft="27dp"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/got"/>
                 <TextView android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
@@ -82,7 +84,8 @@
                     android:layout_width="19dp"
                     android:layout_height="18dp"
                     android:layout_marginLeft="23dp"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/call"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -91,6 +94,10 @@
                     android:textColor="#262626"
                     android:textSize="14sp" />
             </LinearLayout>
+
         </LinearLayout>
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="4dp"/>
     </LinearLayout>
 </LinearLayout>
