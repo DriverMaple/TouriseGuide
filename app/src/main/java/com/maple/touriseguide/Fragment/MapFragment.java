@@ -40,6 +40,7 @@ import com.maple.touriseguide.Common.Global;
 import com.maple.touriseguide.Common.Result;
 import com.maple.touriseguide.Entity.User;
 import com.maple.touriseguide.R;
+import com.maple.touriseguide.Util.InfoWindowUtil;
 import com.maple.touriseguide.Util.MarkerInfoUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
@@ -363,7 +364,7 @@ public class MapFragment extends Fragment {
         //显示marker
         private void addOverlay(List<MarkerInfoUtil> infos) {
             //清空地图
-            mBaiduMap.clear();
+            //mBaiduMap.clear();
             //创建marker的显示图标
             BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.mipmap.bmap_icon);
             LatLng latLng = null;
@@ -391,14 +392,16 @@ public class MapFragment extends Fragment {
             //mBaiduMap.setMapStatus(msu);
 
             //添加marker点击事件的监听
-            /*mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
+            mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
                     //从marker中获取info信息
                     Bundle bundle = marker.getExtraInfo();
                     MarkerInfoUtil infoUtil = (MarkerInfoUtil) bundle.getSerializable("info");
+
+                    InfoWindowUtil myInfoWindow = new InfoWindowUtil(infoUtil,getActivity().getApplicationContext(),getActivity());
                     //将信息显示在界面上
-                    ImageView iv_img = (ImageView)rl_marker.findViewById(R.id.iv_img);
+                    /*ImageView iv_img = (ImageView)rl_marker.findViewById(R.id.iv_img);
                     iv_img.setBackgroundResource(infoUtil.getImgId());
                     TextView tv_name = (TextView)rl_marker.findViewById(R.id.tv_name);
                     tv_name.setText(infoUtil.getName());
@@ -426,11 +429,11 @@ public class MapFragment extends Fragment {
                         }
                     };
                     //显示infowindow
-                    InfoWindow infoWindow = new InfoWindow(bitmapDescriptor, latLng, -47, listener);
-                    mBaiduMap.showInfoWindow(infoWindow);
+                    InfoWindow infoWindow = new InfoWindow(bitmapDescriptor, latLng, -47, listener);*/
+                    mBaiduMap.showInfoWindow(myInfoWindow.init());
                     return true;
                 }
-            });*/
+            });
         }
     }
 }

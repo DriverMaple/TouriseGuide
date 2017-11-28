@@ -19,7 +19,7 @@ public class MarkerInfoUtil implements Serializable {
     public MarkerInfoUtil() {
     }
 
-    public MarkerInfoUtil(double latitude, double longitude, String user_names, String phone) {
+    public MarkerInfoUtil(double latitude, double longitude, String user_name, String phone) {
         super();
         this.latitude = latitude;
         this.longitude = longitude;
