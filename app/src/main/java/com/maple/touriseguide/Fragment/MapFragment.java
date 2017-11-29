@@ -8,6 +8,7 @@ import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -263,10 +264,8 @@ public class MapFragment extends Fragment {
                             Result result = new Result(string, null, false);
                             if (result.getResult() == 0) {
                             } else {
-                                Looper.prepare();
                                 Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
                                         Toast.LENGTH_SHORT).show();
-                                Looper.loop();
                             }
                             return null;
                         }
@@ -358,10 +357,8 @@ public class MapFragment extends Fragment {
                                     addOverlay(infos);
                                 }
                             } else {
-                                Looper.prepare();
                                 Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
                                         Toast.LENGTH_SHORT).show();
-                                Looper.loop();
                             }
                         }
                     });
@@ -405,7 +402,7 @@ public class MapFragment extends Fragment {
                     Bundle bundle = marker.getExtraInfo();
                     MarkerInfoUtil infoUtil = (MarkerInfoUtil) bundle.getSerializable("info");
 
-                    InfoWindowUtil myInfoWindow = new InfoWindowUtil(infoUtil,getActivity().getApplicationContext(),getActivity());
+                    InfoWindowUtil myInfoWindow = new InfoWindowUtil(infoUtil,getActivity().getApplicationContext());
                     //将信息显示在界面上
                     /*ImageView iv_img = (ImageView)rl_marker.findViewById(R.id.iv_img);
                     iv_img.setBackgroundResource(infoUtil.getImgId());
@@ -427,15 +424,14 @@ public class MapFragment extends Fragment {
                     //infowindow位置
                     LatLng latLng = new LatLng(infoUtil.getLatitude(), infoUtil.getLongitude());
                     //infowindow点击事件*/
-                    InfoWindow.OnInfoWindowClickListener listener = new InfoWindow.OnInfoWindowClickListener() {
+                    mBaiduMap.showInfoWindow(myInfoWindow.init());
+                    mBaiduMap.setOnMapTouchListener(new BaiduMap.OnMapTouchListener() {
                         @Override
-                        public void onInfoWindowClick() {
-                            //隐藏infowindow
+                        public void onTouch(MotionEvent motionEvent) {
                             mBaiduMap.hideInfoWindow();
                             isFresh = true;
                         }
-                    };
-                    mBaiduMap.showInfoWindow(myInfoWindow.init());
+                    });
                     isFresh = false;
                     return true;
                 }

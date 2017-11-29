@@ -72,6 +72,8 @@ public class TeaFragment extends Fragment {
         e_team_name = (EditText) view.findViewById(R.id.team_name);
         e_team_pw = (EditText) view.findViewById(R.id.team_pw);
 
+
+
         if (sp.getInt("team_id",0) == 0){
             showNullTeam();
         } else {
@@ -82,7 +84,7 @@ public class TeaFragment extends Fragment {
     private void showNullTeam() {
         have_team.setVisibility(View.GONE);
         null_team.setVisibility(View.VISIBLE);
-        if (sp.getInt("user_id",0) == 2){
+        if (sp.getInt("user_role",0) == 1){
             join_team.setText("创建团队");
         }
 
@@ -128,10 +130,8 @@ public class TeaFragment extends Fragment {
                                                  editor.commit();
                                                  showVp();
                                              } else {
-                                                 Looper.prepare();
                                                  Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
                                                          Toast.LENGTH_SHORT).show();
-                                                 Looper.loop();
                                              }
                                          }
                                      }
@@ -171,10 +171,8 @@ public class TeaFragment extends Fragment {
                                         editor.commit();
                                         showVp();
                                     } else {
-                                        Looper.prepare();
                                         Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
                                                 Toast.LENGTH_SHORT).show();
-                                        Looper.loop();
                                     }
                                 }
                             });

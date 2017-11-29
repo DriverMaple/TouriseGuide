@@ -76,50 +76,10 @@ public class MainActivity extends AppCompatActivity {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         sp = this.getSharedPreferences("userInfo", Context.MODE_PRIVATE);
-        checkTeam();
         initView();
     }
 
-    private void checkTeam() {
-        String url = Global.MyIP + "/getTeam";
-        OkHttpUtils
-                .postString()
-                .url(url)
-                .content("{" +
-                        "\"user_id\":" + "\"" + sp.getInt("user_id", 0) + "\"" +
-                        "}")
-                .mediaType(MediaType.parse("application/json; charset=utf-8"))
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        call.cancel();
-                        Looper.prepare();
-                        Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
-                        Looper.loop();
-                    }
 
-                    @Override
-                    public void onResponse(String response, int id) {
-                        Result result = new Result(response, Team.class, false);
-                        Team team = (Team) result.getValue();
-                        if (result.getResult() == 0) {
-                            if (null != team) {
-                                SharedPreferences.Editor editor = sp.edit();
-                                //存储team_id
-                                editor.putInt("team_id", team.getTeam_id());
-                                editor.putString("guider_phone", team.getGuider_phone());
-                                editor.commit();
-                            }
-                        } else {
-                            Looper.prepare();
-                            Toast.makeText(getApplicationContext(), result.getMessage(),
-                                    Toast.LENGTH_SHORT).show();
-                            Looper.loop();
-                        }
-                    }
-                });
-    }
 
     private void initView() {
         LinearLayout first = (LinearLayout) findViewById(R.id.first);

@@ -24,9 +24,9 @@ public class InfoWindowUtil {
     private TextView addr;
     private LinearLayout navigation;
     private LinearLayout call;
-    private Activity activity;
+    private InfoWindow infoWindow;
 
-    public InfoWindowUtil(MarkerInfoUtil info, Context context, Activity activity) {
+    public InfoWindowUtil(MarkerInfoUtil info, Context context) {
         this.info = info;
         this.context = context;
     }
@@ -61,9 +61,10 @@ public class InfoWindowUtil {
             }
         });
 
+
         LatLng latLng = new LatLng(info.getLatitude(),info.getLongitude());
 
-        InfoWindow infoWindow = new InfoWindow(view, latLng, -75);
+        infoWindow = new InfoWindow(view, latLng, -85);
 
         return infoWindow;
     }

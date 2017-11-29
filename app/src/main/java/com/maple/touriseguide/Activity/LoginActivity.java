@@ -21,10 +21,15 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.maple.touriseguide.Common.Global;
 import com.maple.touriseguide.Common.Result;
+import com.maple.touriseguide.Entity.Team;
 import com.maple.touriseguide.Entity.User;
 import com.maple.touriseguide.R;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import okhttp3.Call;
 import okhttp3.MediaType;
@@ -116,15 +121,19 @@ public class LoginActivity extends AppCompatActivity {
                                     //记住用户名、密码、
                                     SharedPreferences.Editor editor = sp.edit();
                                     editor.putInt("user_id",user.getUser_id());
+                                    editor.putString("nick_name",user.getNick_name());
+                                    editor.putString("motto",user.getMotto());
                                     editor.putInt("user_role",user_role);
                                     editor.putString("account", phone);
                                     editor.putString("password",password);
                                     editor.putBoolean("isLogin",true);
                                     editor.commit();
+                                    checkTeam();
                                     //跳转
                                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                     startActivity(intent);
                                     finish();
+
                                     Looper.loop();
                                 } else {
                                     Looper.prepare();
@@ -187,5 +196,46 @@ public class LoginActivity extends AppCompatActivity {
             finish();
             System.exit(0);
         }
+    }
+
+    private void checkTeam() {
+        String url = Global.MyIP + "/getTeam";
+        OkHttpUtils
+                .postString()
+                .url(url)
+                .content("{" +
+                        "\"user_id\":" + "\"" + sp.getInt("user_id", 0) + "\"" +
+                        "}")
+                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        call.cancel();
+                        Looper.prepare();
+                        Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                        Looper.loop();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Result result = new Result(response, Team.class, false);
+                        Team team = (Team) result.getValue();
+                        if (result.getResult() == 0) {
+                            if (null != team) {
+                                SharedPreferences.Editor editor = sp.edit();
+                                //存储team_id
+                                editor.putInt("team_id", team.getTeam_id());
+                                editor.putString("guider_phone", team.getGuider_phone());
+                                editor.commit();
+                            }
+                        } else {
+                            Looper.prepare();
+                            Toast.makeText(getApplicationContext(), result.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                            Looper.loop();
+                        }
+                    }
+                });
     }
 }

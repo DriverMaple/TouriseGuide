@@ -118,7 +118,7 @@ public class SugFragment extends Fragment {
     private void loadImage() {
         for (int i = pageIndex * pageSize; i < pageIndex * pageSize + pageSize
                 && i < 20; i++) {
-            httplink(i);
+            //httplink(i);
         }
         pageIndex++;
     }

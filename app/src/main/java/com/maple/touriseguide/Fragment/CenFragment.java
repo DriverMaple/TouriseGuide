@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.maple.touriseguide.Activity.LoginActivity;
 import com.maple.touriseguide.Activity.MainActivity;
@@ -24,6 +25,8 @@ public class CenFragment extends Fragment{
     private Button exists;
     private SharedPreferences sp;
     private ImageView exit;
+    private TextView user_name;
+    private TextView motto;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -36,6 +39,10 @@ public class CenFragment extends Fragment{
     private void initView(View view) {
         exists = (Button) view.findViewById(R.id.exist);
         exit = (ImageView) view.findViewById(R.id.exit);
+        user_name = (TextView) view.findViewById(R.id.user_name);
+        motto = (TextView) view.findViewById(R.id.motto);
+        user_name.setText(sp.getString("nick_name",""));
+        motto.setText(sp.getString("motto",""));
 
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,6 +62,8 @@ public class CenFragment extends Fragment{
                 editor.remove("user_role");
                 editor.remove("team_id");
                 editor.remove("guider_phone");
+                editor.remove("nick_name");
+                editor.remove("motto");
                 editor.putBoolean("isLogin",false);
                 editor.commit();
 
