@@ -71,8 +71,6 @@ public class CenFragment extends Fragment{
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
                 getActivity().finish();
-                //getActivity().finish();
-                //System.exit(0);
             }
         });
     }

@@ -3,6 +3,7 @@ package com.maple.touriseguide.Fragment;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import com.maple.touriseguide.Common.Result;
 import com.maple.touriseguide.Entity.Team;
 import com.maple.touriseguide.Entity.User;
 import com.maple.touriseguide.R;
+import com.maple.touriseguide.Util.MyListView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -35,7 +37,7 @@ import okhttp3.MediaType;
  */
 
 public class ChiMemberFragment extends Fragment {
-    ListView listView;
+    MyListView listView;
     private SharedPreferences sp;
 
     @Override
@@ -49,14 +51,14 @@ public class ChiMemberFragment extends Fragment {
     }
 
     private void initView(View view) {
-        listView = (ListView) view.findViewById(R.id.member);
+        listView = (MyListView) view.findViewById(R.id.member);
     }
 
     private List<Map<String, Object>> getData(List<User> users) {
         List<Map<String, Object>> members = new ArrayList<>();
-        Map<String, Object> map = new HashMap<String, Object>();
 
         for (User user : users) {
+            Map<String, Object> map = new HashMap<String, Object>();
             map.put("head_pic", R.drawable.tx);
             map.put("member_name", user.getNick_name());
             map.put("introduction", user.getMotto());
@@ -85,12 +87,35 @@ public class ChiMemberFragment extends Fragment {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        Result result = new Result(response, User.class, true);
+                        final Result result = new Result(response, User.class, true);
                         List<User> us = (List<User>) result.getValue();
 
                         if (result.getResult() == 0) {
                             SimpleAdapter adapter = new SimpleAdapter(getActivity(), getData(us), R.layout.item_member, new String[]{"head_pic", "member_name", "introduction"}, new int[]{R.id.head_pic, R.id.member_name, R.id.introduction});
                             listView.setAdapter(adapter);
+                            listView.setonRefreshListener(new MyListView.OnRefreshListener() {
+
+                                @Override
+                                public void onRefresh() {
+                                    new AsyncTask<Void, Void, Void>() {
+                                        protected Void doInBackground(Void... params) {
+                                            try {
+                                                Thread.sleep(1000);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                            //us.add(result.getValue());
+                                            return null;
+                                        }
+
+                                        @Override
+                                        protected void onPostExecute(Void result) {
+                                            //adapter.notifyDataSetChanged();
+                                            //lv.onRefreshComplete();
+                                        }
+                                    }.execute(null, null, null);
+                                }
+                            });
                         } else {
                             Looper.prepare();
                             Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),

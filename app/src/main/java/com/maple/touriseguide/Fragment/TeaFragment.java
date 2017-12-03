@@ -1,11 +1,13 @@
 package com.maple.touriseguide.Fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,15 +41,17 @@ public class TeaFragment extends Fragment {
     private LinearLayout tourise;
     private LinearLayout null_team;
     private LinearLayout have_team;
+    private LinearLayout exit_team;
     private Button join_team;
     private MyViewPager viewPager;
     private TextView text_team;
     private TextView text_tourise;
     private EditText e_team_name;
     private EditText e_team_pw;
+    private SharedPreferences.Editor editor;
 
-    static int pre_color = Color.rgb(210,7,3);
-    static int color = Color.rgb(255,255,255);
+    static int pre_color = Color.rgb(210, 7, 3);
+    static int color = Color.rgb(255, 255, 255);
     private SharedPreferences sp;
 
     @Override
@@ -55,6 +59,7 @@ public class TeaFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_tea, container, false);
         sp = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+        editor = sp.edit();
         initView(view);
         return view;
     }
@@ -68,13 +73,28 @@ public class TeaFragment extends Fragment {
 
         null_team = (LinearLayout) view.findViewById(R.id.null_team);
         have_team = (LinearLayout) view.findViewById(R.id.have_team);
+        exit_team = (LinearLayout) view.findViewById(R.id.exit_team);
         join_team = (Button) view.findViewById(R.id.join_team);
         e_team_name = (EditText) view.findViewById(R.id.team_name);
         e_team_pw = (EditText) view.findViewById(R.id.team_pw);
 
+        //构造适配器
+        List<Fragment> fragments = new ArrayList<Fragment>();
+        fragments.add(new ChiMemberFragment());
+        fragments.add(new ChiShareFragment());
+
+        MyFragmentAdapter adapter = new MyFragmentAdapter(getActivity().getSupportFragmentManager(), fragments);
+
+        //设定适配器
+        viewPager.setScanScroll(false);
+        viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(0);
+        tourise.setBackgroundResource(0);
+        team.setBackgroundResource(R.drawable.selector_background_underline);
+        text_team.setTextColor(pre_color);
 
 
-        if (sp.getInt("team_id",0) == 0){
+        if (sp.getInt("team_id", 0) == 0) {
             showNullTeam();
         } else {
             showVp();
@@ -83,8 +103,9 @@ public class TeaFragment extends Fragment {
 
     private void showNullTeam() {
         have_team.setVisibility(View.GONE);
+        exit_team.setVisibility(View.GONE);
         null_team.setVisibility(View.VISIBLE);
-        if (sp.getInt("user_role",0) == 1){
+        if (sp.getInt("user_role", 0) == 1) {
             join_team.setText("创建团队");
         }
 
@@ -94,17 +115,17 @@ public class TeaFragment extends Fragment {
 
                 String team_name = e_team_name.getText().toString();
                 String team_pw = e_team_pw.getText().toString();
-                int user_id = sp.getInt("user_id",0);
+                int user_id = sp.getInt("user_id", 0);
 
-                if (sp.getInt("user_role",0) == 1){
-                    String url = Global.MyIP+"/createTeam";
+                if (sp.getInt("user_role", 0) == 1) {
+                    String url = Global.MyIP + "/createTeam";
                     OkHttpUtils
                             .postString()
                             .url(url)
                             .content("{" +
-                                    "\"team_name\":"+"\""+team_name+"\","+
-                                    "\"team_pw\":"+"\""+team_pw+"\","+
-                                    "\"user_id\":"+"\""+user_id+"\""+
+                                    "\"team_name\":" + "\"" + team_name + "\"," +
+                                    "\"team_pw\":" + "\"" + team_pw + "\"," +
+                                    "\"user_id\":" + "\"" + user_id + "\"" +
                                     "}")
                             .mediaType(MediaType.parse("application/json; charset=utf-8"))
                             .build()
@@ -113,20 +134,19 @@ public class TeaFragment extends Fragment {
                                          public void onError(Call call, Exception e, int id) {
                                              call.cancel();
                                              Looper.prepare();
-                                             Toast.makeText(getActivity().getApplicationContext(),e.toString(),Toast.LENGTH_SHORT).show();
+                                             Toast.makeText(getActivity().getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
                                              Looper.loop();
                                          }
 
                                          @Override
                                          public void onResponse(String response, int id) {
-                                             Result result = new Result(response,Team.class,false);
+                                             Result result = new Result(response, Team.class, false);
                                              Team team = (Team) result.getValue();
-                                             if (result.getResult() == 0){
-                                                 Toast.makeText(getActivity().getApplicationContext(), "成功创建！"+team.getTeam_id().toString(),
+                                             if (result.getResult() == 0) {
+                                                 Toast.makeText(getActivity().getApplicationContext(), "成功创建！",
                                                          Toast.LENGTH_SHORT).show();
                                                  //记住用户名、密码、
-                                                 SharedPreferences.Editor editor = sp.edit();
-                                                 editor.putInt("team_id",team.getTeam_id());
+                                                 editor.putInt("team_id", team.getTeam_id());
                                                  editor.commit();
                                                  showVp();
                                              } else {
@@ -136,7 +156,7 @@ public class TeaFragment extends Fragment {
                                          }
                                      }
                             );
-                } else if (sp.getInt("user_role",0) == 2) {
+                } else if (sp.getInt("user_role", 0) == 2) {
                     String url = Global.MyIP + "/joinTeam";
                     OkHttpUtils
                             .postString()
@@ -152,9 +172,9 @@ public class TeaFragment extends Fragment {
                                 @Override
                                 public void onError(Call call, Exception e, int id) {
                                     call.cancel();
-                                    /*Looper.prepare();
-                                    Toast.makeText(getActivity().getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
-                                    Looper.loop();*/
+                                    //Looper.prepare();
+                                    //Toast.makeText(getActivity().getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                                    //Looper.loop();
                                     e.printStackTrace();
                                 }
 
@@ -163,10 +183,10 @@ public class TeaFragment extends Fragment {
                                     Result result = new Result(response, Team.class, false);
                                     Team team = (Team) result.getValue();
                                     if (result.getResult() == 0) {
-                                        Toast.makeText(getActivity().getApplicationContext(), "成功加入！" + team.getTeam_id().toString(),
+                                        Toast.makeText(getActivity().getApplicationContext(), "成功加入！",
                                                 Toast.LENGTH_SHORT).show();
                                         //记住用户名、密码、
-                                        SharedPreferences.Editor editor = sp.edit();
+
                                         editor.putInt("team_id", team.getTeam_id());
                                         editor.commit();
                                         showVp();
@@ -181,23 +201,10 @@ public class TeaFragment extends Fragment {
         });
     }
 
-    private void showVp(){
+    private void showVp() {
         have_team.setVisibility(View.VISIBLE);
+        exit_team.setVisibility(View.VISIBLE);
         null_team.setVisibility(View.GONE);
-        //构造适配器
-        List<Fragment> fragments = new ArrayList<Fragment>();
-        fragments.add(new ChiMemberFragment());
-        fragments.add(new ChiShareFragment());
-
-        MyFragmentAdapter adapter = new MyFragmentAdapter(getActivity().getSupportFragmentManager(), fragments);
-
-        //设定适配器
-        viewPager.setScanScroll(false);
-        viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(0);
-        tourise.setBackgroundResource(0);
-        team.setBackgroundResource(R.drawable.selector_background_underline);
-        text_team.setTextColor(pre_color);
 
         team.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -219,5 +226,81 @@ public class TeaFragment extends Fragment {
                 viewPager.setCurrentItem(1);
             }
         });
+        exit_team.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showNormalDialog();
+            }
+        });
+    }
+
+    private void showNormalDialog() {
+        /* @setIcon 设置对话框图标
+         * @setTitle 设置对话框标题
+         * @setMessage 设置对话框消息提示
+         * setXXX方法返回Dialog对象，因此可以链式设置属性
+         */
+        final AlertDialog.Builder normalDialog =
+                new AlertDialog.Builder(getActivity());
+        normalDialog.setTitle("注意");
+        normalDialog.setMessage("确定退出团队？");
+        normalDialog.setPositiveButton("确定",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        showNullTeam();
+                        String url = "";
+                        if (sp.getInt("user_role", 0) == 1) {
+                            url = Global.MyIP + "/deleteTeam";
+                        } else {
+                            url = Global.MyIP + "/exitTeam";
+                        }
+                        OkHttpUtils
+                                .postString()
+                                .url(url)
+                                .content("{" +
+                                        "\"team_id\":" + "\"" + sp.getInt("team_id", 0) + "\"," +
+                                        "\"user_id\":" + "\"" + sp.getInt("user_id", 0) + "\"" +
+                                        "}")
+                                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                                .build()
+                                .execute(new StringCallback() {
+                                    @Override
+                                    public void onError(Call call, Exception e, int id) {
+                                        call.cancel();
+                                    /*Looper.prepare();
+                                    Toast.makeText(getActivity().getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
+                                    Looper.loop();*/
+                                        e.printStackTrace();
+                                    }
+
+                                    @Override
+                                    public void onResponse(String response, int id) {
+                                        Result result = new Result(response, Team.class, false);
+                                        Team team = (Team) result.getValue();
+                                        if (result.getResult() == 0) {
+                                            Toast.makeText(getActivity(), "成功退出！",
+                                                    Toast.LENGTH_SHORT).show();
+                                            //记住用户名、密码、
+                                            editor.remove("team_id");
+                                            editor.commit();
+                                        } else {
+                                            Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
+                    }
+                });
+        normalDialog.setNegativeButton("取消",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        // 显示
+        normalDialog.show();
     }
 }

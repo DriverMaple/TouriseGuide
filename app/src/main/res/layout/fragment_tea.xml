@@ -53,46 +53,17 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="#252525"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:background="#252525">
 
-                <!--<RadioGroup
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="horizontal">
 
-                    <RadioButton
-                        android:id="@+id/team"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/selector_background_underline"
-                        android:button="null"
-                        android:gravity="center_vertical"
-                        android:text="团队成员" />
-
-                    <View
-                        android:layout_width="0px"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="20dp"
-                        android:layout_marginBottom="10dp" />
-
-                    <RadioButton
-                        android:id="@+id/tourise"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/selector_background_underline"
-                        android:button="null"
-                        android:gravity="center_vertical"
-                        android:text="旅途点滴" />
-                </RadioGroup>-->
-
+                <LinearLayout
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center">
                 <LinearLayout
                     android:id="@+id/team"
                     android:layout_width="wrap_content"
@@ -134,8 +105,32 @@
                         android:text="旅途点滴"
                         android:textColor="#ffffff" />
                 </LinearLayout>
+                </LinearLayout>
 
-            </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/exit_team"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:src="@mipmap/exit"
+                        android:layout_width="30dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="退团"
+                        android:textColor="#ffffff"
+                        android:layout_gravity="center"
+                        android:textSize="10sp"
+                        android:layout_marginTop="2dp"/>
+                </LinearLayout>
+
+            </FrameLayout>
 
             <com.maple.touriseguide.Util.MyViewPager
                 android:id="@+id/vp"

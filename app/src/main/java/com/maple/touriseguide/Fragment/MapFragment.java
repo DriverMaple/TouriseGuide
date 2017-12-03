@@ -238,10 +238,14 @@ public class MapFragment extends Fragment {
                 mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
             }
             MyPosition(bdLocation);
-            if (sp.getInt("user_role",0) == 2){
-                showGuider();
+            if (sp.getInt("team_id",0) != 0){
+                if (sp.getInt("user_role",0) == 2){
+                    showGuider();
+                } else {
+                    showTourise();
+                }
             } else {
-                showTourise();
+                mBaiduMap.clear();
             }
         }
 
@@ -424,7 +428,7 @@ public class MapFragment extends Fragment {
                     //infowindow位置
                     LatLng latLng = new LatLng(infoUtil.getLatitude(), infoUtil.getLongitude());
                     //infowindow点击事件*/
-                    mBaiduMap.showInfoWindow(myInfoWindow.init());
+                    mBaiduMap.showInfoWindow(myInfoWindow.init(ll));
                     mBaiduMap.setOnMapTouchListener(new BaiduMap.OnMapTouchListener() {
                         @Override
                         public void onTouch(MotionEvent motionEvent) {

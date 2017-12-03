@@ -7,6 +7,10 @@
     android:layout_marginRight="10dp"
     android:orientation="vertical">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -47,8 +51,4 @@
                 android:textSize="15sp" />
         </LinearLayout>
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="10dp" />
 </LinearLayout>
