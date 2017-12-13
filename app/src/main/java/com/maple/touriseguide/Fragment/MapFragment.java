@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.InfoWindow;
+import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
@@ -35,6 +37,20 @@ import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.overlayutil.OverlayManager;
+import com.baidu.mapapi.overlayutil.WalkingRouteOverlay;
+import com.baidu.mapapi.search.core.RouteLine;
+import com.baidu.mapapi.search.core.SearchResult;
+import com.baidu.mapapi.search.route.BikingRouteResult;
+import com.baidu.mapapi.search.route.DrivingRouteResult;
+import com.baidu.mapapi.search.route.IndoorRouteResult;
+import com.baidu.mapapi.search.route.MassTransitRouteResult;
+import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
+import com.baidu.mapapi.search.route.PlanNode;
+import com.baidu.mapapi.search.route.RoutePlanSearch;
+import com.baidu.mapapi.search.route.TransitRouteResult;
+import com.baidu.mapapi.search.route.WalkingRoutePlanOption;
+import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.maple.touriseguide.Activity.LoginActivity;
 import com.maple.touriseguide.Activity.MainActivity;
 import com.maple.touriseguide.Common.Global;
@@ -58,7 +74,7 @@ import okhttp3.Response;
  * Created by Maple on 2017/10/25.
  */
 
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements BaiduMap.OnMapClickListener,OnGetRoutePlanResultListener {
     private MapView mMapView = null;
     private BaiduMap mBaiduMap;
     private ImageView locate_you;
@@ -78,6 +94,31 @@ public class MapFragment extends Fragment {
     //定位回调
     private BDLocationListener mBDLocationListener = new MyLocationListener();
 
+    //上一个节点
+    //Button mBtnPre = null;
+    //下一个节点
+    //Button mBtnNext = null;
+    //节点索引,供浏览节点时使用
+    int nodeIndex = -1;
+
+    /**
+     * 路线数据结构的基类,表示一条路线，路线可能包括：路线规划中的换乘/驾车/步行路线
+     * 此类为路线数据结构的基类，一般关注其子类对象即可，无需直接生成该类对象
+     * */
+    RouteLine route = null;
+
+    /**
+     * 该类提供一个能够显示和管理多个Overlay的基类
+     * */
+    OverlayManager routeOverlay = null;
+
+    boolean useDefaultIcon = false;
+    //private TextView popupText = null;//泡泡view
+    /**
+     * 路径规划搜索接口
+     * */
+    RoutePlanSearch mSearch = null;    // 搜索模块，也可去掉地图模块独立使用
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //在使用SDK各组件之前初始化context信息，传入ApplicationContext
@@ -87,6 +128,14 @@ public class MapFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         sp = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         user_id = String.valueOf(sp.getInt("user_id", 0));
+
+        /**
+         * public static RoutePlanSearch newInstance()
+         * 获取RoutePlan检索实例
+         * @param RoutePlan检索实例
+         * */
+        mSearch = RoutePlanSearch.newInstance();
+        mSearch.setOnGetRoutePlanResultListener(this);
 
         //初始化试图
         initView(view);
@@ -200,6 +249,92 @@ public class MapFragment extends Fragment {
 
         //覆盖物 用于显示当前位置
         mMarker = BitmapDescriptorFactory.fromResource(R.mipmap.rmap_icon);
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+
+    }
+
+    @Override
+    public boolean onMapPoiClick(MapPoi mapPoi) {
+        return false;
+    }
+
+    @Override
+    public void onGetWalkingRouteResult(WalkingRouteResult result) {
+        if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
+            Toast.makeText(getActivity(), "抱歉，未找到结果", Toast.LENGTH_SHORT).show();
+        }
+        if (result.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
+            //起终点或途经点地址有岐义，通过以下接口获取建议查询信息
+            //result.getSuggestAddrInfo()
+            return;
+        }
+        if (result.error == SearchResult.ERRORNO.NO_ERROR) {
+            nodeIndex = -1;
+            //mBtnPre.setVisibility(View.VISIBLE);
+            //mBtnNext.setVisibility(View.VISIBLE);
+
+            /**
+             * public java.util.List<WalkingRouteLine> getRouteLines()
+             * 获取所有步行规划路线
+             * 返回:所有步行规划路线
+             * */
+            route = result.getRouteLines().get(0);
+
+            WalkingRouteOverlay overlay = new MyWalkingRouteOverlay(mBaiduMap);
+
+            /**
+             * 设置地图 Marker 覆盖物点击事件监听者
+             * 需要实现的方法：     onMarkerClick(Marker marker)
+             * */
+            mBaiduMap.setOnMarkerClickListener(overlay);
+            routeOverlay = overlay;
+
+            /**
+             * public void setData(WalkingRouteLine line)设置路线数据。
+             * 参数:line - 路线数据
+             * */
+            overlay.setData(result.getRouteLines().get(0));
+
+            /**
+             * public final void addToMap()将所有Overlay 添加到地图上
+             * */
+            overlay.addToMap();
+
+            /**
+             * public void zoomToSpan()
+             * 缩放地图，使所有Overlay都在合适的视野内
+             * 注： 该方法只对Marker类型的overlay有效
+             * */
+            overlay.zoomToSpan();
+        }
+    }
+
+    @Override
+    public void onGetTransitRouteResult(TransitRouteResult transitRouteResult) {
+
+    }
+
+    @Override
+    public void onGetMassTransitRouteResult(MassTransitRouteResult massTransitRouteResult) {
+
+    }
+
+    @Override
+    public void onGetDrivingRouteResult(DrivingRouteResult drivingRouteResult) {
+
+    }
+
+    @Override
+    public void onGetIndoorRouteResult(IndoorRouteResult indoorRouteResult) {
+
+    }
+
+    @Override
+    public void onGetBikingRouteResult(BikingRouteResult bikingRouteResult) {
+
     }
 
     private class MyLocationListener implements BDLocationListener {
@@ -369,7 +504,7 @@ public class MapFragment extends Fragment {
         }
 
         //显示marker
-        private void addOverlay(List<MarkerInfoUtil> infos) {
+        private void addOverlay(final List<MarkerInfoUtil> infos) {
             //清空地图
             mBaiduMap.clear();
             //创建marker的显示图标
@@ -397,37 +532,24 @@ public class MapFragment extends Fragment {
             //将地图显示在最后一个marker的位置
             //MapStatusUpdate msu = MapStatusUpdateFactory.newLatLng(latLng);
             //mBaiduMap.setMapStatus(msu);
-
-            //添加marker点击事件的监听
             mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(Marker marker) {
                     //从marker中获取info信息
                     Bundle bundle = marker.getExtraInfo();
-                    MarkerInfoUtil infoUtil = (MarkerInfoUtil) bundle.getSerializable("info");
-
-                    InfoWindowUtil myInfoWindow = new InfoWindowUtil(infoUtil,getActivity().getApplicationContext());
-                    //将信息显示在界面上
-                    /*ImageView iv_img = (ImageView)rl_marker.findViewById(R.id.iv_img);
-                    iv_img.setBackgroundResource(infoUtil.getImgId());
-                    TextView tv_name = (TextView)rl_marker.findViewById(R.id.tv_name);
-                    tv_name.setText(infoUtil.getName());
-                    TextView tv_description = (TextView)rl_marker.findViewById(R.id.tv_description);
-                    tv_description.setText(infoUtil.getDescription());
-                    //将布局显示出来
-                    rl_marker.setVisibility(View.VISIBLE);
-
-                    //infowindow中的布局
-                    TextView tv = new TextView(MainActivity.this);
-                    tv.setBackgroundResource(R.drawable.infowindow);
-                    tv.setPadding(20, 10, 20, 20);
-                    tv.setTextColor(android.graphics.Color.WHITE);
-                    tv.setText(infoUtil.getUser_name());
-                    tv.setGravity(Gravity.CENTER);
-                    bitmapDescriptor = BitmapDescriptorFactory.fromView(tv);
-                    //infowindow位置
-                    LatLng latLng = new LatLng(infoUtil.getLatitude(), infoUtil.getLongitude());
-                    //infowindow点击事件*/
+                    final MarkerInfoUtil infoUtil = (MarkerInfoUtil) bundle.getSerializable("info");
+                    InfoWindowUtil myInfoWindow = new InfoWindowUtil(infoUtil, getActivity().getApplicationContext(), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //重置浏览节点的路线数据
+                            route = null;
+                            PlanNode stNode = PlanNode.withLocation(ll);
+                            PlanNode enNode = PlanNode.withLocation(new LatLng(infoUtil.getLatitude(),infoUtil.getLongitude()));
+                            mSearch.walkingSearch((new WalkingRoutePlanOption())
+                                    .from(stNode)
+                                    .to(enNode));
+                        }
+                    });
                     mBaiduMap.showInfoWindow(myInfoWindow.init(ll));
                     mBaiduMap.setOnMapTouchListener(new BaiduMap.OnMapTouchListener() {
                         @Override
@@ -442,4 +564,40 @@ public class MapFragment extends Fragment {
             });
         }
     }
+    /**
+     * WalkingRouteOverlay已经实现了BaiduMap.OnMarkerClickListener接口
+     * */
+    private class MyWalkingRouteOverlay extends WalkingRouteOverlay {
+
+        public MyWalkingRouteOverlay(BaiduMap baiduMap) {
+            super(baiduMap);
+        }
+
+        /**
+         * public BitmapDescriptor getStartMarker()
+         * 覆写此方法以改变默认起点图标
+         * 返回:起点图标
+         * */
+        @Override
+        public BitmapDescriptor getStartMarker() {
+            if (useDefaultIcon) {
+                return BitmapDescriptorFactory.fromResource(R.mipmap.rmap_icon);
+            }
+            return null;
+        }
+
+        /**
+         * public BitmapDescriptor getTerminalMarker()
+         * 覆写此方法以改变默认终点图标
+         * 返回:终点图标
+         * */
+        @Override
+        public BitmapDescriptor getTerminalMarker() {
+            if (useDefaultIcon) {
+                return BitmapDescriptorFactory.fromResource(R.mipmap.bmap_icon);
+            }
+            return null;
+        }
+    }
+
 }
