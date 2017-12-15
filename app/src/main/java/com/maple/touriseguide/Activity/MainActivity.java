@@ -1,6 +1,7 @@
 package com.maple.touriseguide.Activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -225,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showDialog() {
-        final UrgentActivity dialog = new UrgentActivity(this);
+        final UrgentActivity dialog = new UrgentActivity(this,sp.getInt("user_role",0));
         dialog.show();
         dialog.setCancleButton(new View.OnClickListener() {
             @Override
@@ -236,22 +238,65 @@ public class MainActivity extends AppCompatActivity {
         dialog.setPoliceButton(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+"10000"));
-                    startActivity(intent);
-                }catch (SecurityException e){
+                final AlertDialog.Builder normalDialog =
+                        new AlertDialog.Builder(getParent());
+                normalDialog.setTitle("注意");
+                normalDialog.setMessage("即将拨通报警电话？");
+                normalDialog.setPositiveButton("确定",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                try {
+                                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+"10000"));
+                                    startActivity(intent);
+                                }catch (SecurityException e){
 
-                }
+                                }
+                            }
+                        });
+                normalDialog.setNegativeButton("取消",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                // 显示
+                normalDialog.show();
             }
         });
         dialog.setTouriseButton(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+sp.getString("guider_phone","")));
-                    startActivity(intent);
-                }catch (SecurityException e){
+                if (sp.getInt("user_role",0) == 1){
+                    final AlertDialog.Builder normalDialog =
+                            new AlertDialog.Builder(getParent());
+                    normalDialog.setTitle("注意");
+                    normalDialog.setMessage("将向所有成员发送归团提醒短信？");
+                    normalDialog.setPositiveButton("确定",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    normalDialog.setNegativeButton("取消",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    // 显示
+                    normalDialog.show();
+                } else {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+sp.getString("guider_phone","")));
+                        startActivity(intent);
+                    }catch (SecurityException e){
 
+                    }
                 }
             }
         });

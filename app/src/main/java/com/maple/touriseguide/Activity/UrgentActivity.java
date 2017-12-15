@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.maple.touriseguide.R;
 import com.maple.touriseguide.Util.CircleImageView;
@@ -28,9 +29,12 @@ public class UrgentActivity extends Dialog {
     protected ImageView cancle;
     protected CircleImageView call_police;
     protected CircleImageView call_tourise;
+    protected TextView callOrMessage;
+    private int user_role;
 
-    public UrgentActivity(@NonNull Context context) {
+    public UrgentActivity(@NonNull Context context,int user_role) {
         super(context, R.style.CustomDialogStyle);
+        this.user_role = user_role;
     }
 
     public void setCancleButton(View.OnClickListener clickListener) {
@@ -58,6 +62,10 @@ public class UrgentActivity extends Dialog {
         cancle = (ImageView) findViewById(R.id.cancle);
         call_police = (CircleImageView) findViewById(R.id.call_police);
         call_tourise = (CircleImageView) findViewById(R.id.call_tourise);
+        callOrMessage = (TextView) findViewById(R.id.callOrMessage);
 
+        if (user_role == 1){
+            callOrMessage.setText("提醒全体游客归团");
+        }
     }
 }
