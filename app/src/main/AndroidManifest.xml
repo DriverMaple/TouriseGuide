@@ -34,8 +34,8 @@
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="6W4wrtNm8IiBKFG2G194BwDZqSWuDC2Z" />
-            <!-- android:value="KyGDuP3ZttntKYQsYi1k4D5s2N8U783P" -->
+            android:value="KyGDuP3ZttntKYQsYi1k4D5s2N8U783P" />
+            <!-- android:value="6W4wrtNm8IiBKFG2G194BwDZqSWuDC2Z" -->
 
 
         <service
@@ -60,6 +60,9 @@
             android:label="@string/title_activity_login" />
         <activity
             android:name=".Activity.RegisterActivity"
+            android:label="@string/title_activity_login"/>
+        <activity
+            android:name=".Activity.DynamicActivity"
             android:label="@string/title_activity_login"/>
     </application>
 

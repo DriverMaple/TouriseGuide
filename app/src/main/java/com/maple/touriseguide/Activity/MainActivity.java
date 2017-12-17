@@ -227,19 +227,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showDialog() {
-        final UrgentActivity dialog = new UrgentActivity(this,sp.getInt("user_role",0));
-        dialog.show();
-        dialog.setCancleButton(new View.OnClickListener() {
+        final UrgentActivity dialog1 = new UrgentActivity(this,sp.getInt("user_role",0));
+        dialog1.show();
+        dialog1.setCancleButton(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
+                dialog1.dismiss();
             }
         });
-        dialog.setPoliceButton(new View.OnClickListener() {
+        dialog1.setPoliceButton(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final AlertDialog.Builder normalDialog =
-                        new AlertDialog.Builder(getParent());
+                AlertDialog.Builder normalDialog =
+                        new AlertDialog.Builder(MainActivity.this);
                 normalDialog.setTitle("注意");
                 normalDialog.setMessage("即将拨通报警电话？");
                 normalDialog.setPositiveButton("确定",
@@ -266,12 +266,12 @@ public class MainActivity extends AppCompatActivity {
                 normalDialog.show();
             }
         });
-        dialog.setTouriseButton(new View.OnClickListener() {
+        dialog1.setTouriseButton(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (sp.getInt("user_role",0) == 1){
-                    final AlertDialog.Builder normalDialog =
-                            new AlertDialog.Builder(getParent());
+                    AlertDialog.Builder normalDialog =
+                            new AlertDialog.Builder(MainActivity.this);
                     normalDialog.setTitle("注意");
                     normalDialog.setMessage("将向所有成员发送归团提醒短信？");
                     normalDialog.setPositiveButton("确定",
