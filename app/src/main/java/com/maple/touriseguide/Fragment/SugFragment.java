@@ -1,6 +1,6 @@
 package com.maple.touriseguide.Fragment;
 
-import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,18 +16,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.maple.touriseguide.Activity.DynamicActivity;
+import com.maple.touriseguide.Activity.SugActivity;
 import com.maple.touriseguide.Common.Global;
 import com.maple.touriseguide.R;
 import com.maple.touriseguide.Util.MyScrollView;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.BitmapCallback;
-import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.InputStream;
 import java.util.Map;
-
-import okhttp3.Call;
-import okhttp3.OkHttpClient;
 
 /**
  * Created by rrr on 2017/10/26.
@@ -67,11 +63,11 @@ public class SugFragment extends Fragment {
             View view=myInflater.inflate(R.layout.item_sug, null);
             ImageView img = (ImageView) view.findViewById(R.id.sug_img);
             TextView text = (TextView) view.findViewById(R.id.sug_title);
-            Resources res=getResources();
+            FrameLayout sugs = (FrameLayout) view.findViewById(R.id.sugs);
             //InputStream is = getResources().openRawResource(R.drawable.pic1);
-            Bitmap bitmap= decodeBitmapResource(getResources(), (Integer) map.get("sug_pic"));
-            int bitH = bitmap.getHeight();
-            int bitW = bitmap.getWidth();
+            BitmapFactory.Options bitmap= decodeBitmapResource(getResources(), (Integer) map.get("sug_pic"));
+            int bitH = bitmap.outHeight;
+            int bitW = bitmap.outWidth;
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(imgvWidth, FrameLayout.LayoutParams.WRAP_CONTENT);
             lp.height = bitH * lp.width / bitW;
             lp.setMargins(0, 5, 0, 0);
@@ -80,19 +76,27 @@ public class SugFragment extends Fragment {
             img.setImageBitmap(decodeSampledBitmapFromResource(getResources(), (Integer) map.get("sug_pic"), lp.width/2, lp.height/2));
             text.setText((String)map.get("sug_title"));
             clos[i % 2].addView(view);
+
+            final int sug_no = i;
+            sugs.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), SugActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("sug_no",sug_no);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+            });
     }
 
 
 
-    private Bitmap decodeBitmapResource(Resources resources,int id) {
-        Bitmap bitmap;
-        InputStream is = resources.openRawResource(id);
+    public static BitmapFactory.Options decodeBitmapResource(Resources resources, int id) {
         BitmapFactory.Options opts = new BitmapFactory.Options();
-        opts.inPurgeable = true;
-        opts.inInputShareable = true;
-        opts.inPreferredConfig = Bitmap.Config.RGB_565;
-        bitmap = BitmapFactory.decodeStream(is, null, opts);
-        return bitmap;
+        opts.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(resources, id, opts);
+        return opts;
     }
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
                                                          int reqWidth, int reqHeight) {
