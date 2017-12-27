@@ -95,6 +95,8 @@
             android:background="#c2c2c2" />
 
         <LinearLayout
+            android:id="@+id/jbxx"
+            android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="50dp">
 
@@ -133,6 +135,8 @@
             android:background="#c2c2c2" />
 
         <LinearLayout
+            android:id="@+id/xtsz"
+            android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="50dp">
 
@@ -171,6 +175,8 @@
             android:background="#c2c2c2" />
 
         <LinearLayout
+            android:id="@+id/xgmm"
+            android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="50dp">
 
@@ -209,6 +215,8 @@
             android:background="#c2c2c2" />
 
         <LinearLayout
+            android:id="@+id/bbxx"
+            android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="50dp">
 

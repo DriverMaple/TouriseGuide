@@ -67,6 +67,9 @@
         <activity
             android:name=".Activity.DynamicActivity"
             android:label="@string/title_activity_login"/>
+        <activity
+            android:name=".Activity.UserActivity"
+            android:label="@string/title_activity_login"/>
 
     </application>
 
