@@ -53,9 +53,13 @@ public class DynamicActivity extends AppCompatActivity {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
                 String str = sdf.format(new Date());
                 String content = myMessage.getText().toString();
-                Global.adddata(sp.getString("nick_name",""),str,content);
-                Toast.makeText(getApplicationContext(),"发表成功！",Toast.LENGTH_SHORT);
-                DynamicActivity.this.finish();
+                if (content.equals("")){
+                    Toast.makeText(getApplicationContext(),"分享内容不能为空！",Toast.LENGTH_SHORT).show();
+                } else {
+                    Global.adddata(sp.getString("nick_name",""),str,content);
+                    Toast.makeText(getApplicationContext(),"发表成功！",Toast.LENGTH_SHORT);
+                    DynamicActivity.this.finish();
+                }
             }
         });
 

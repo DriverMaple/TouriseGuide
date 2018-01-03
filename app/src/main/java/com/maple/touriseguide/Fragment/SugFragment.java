@@ -1,6 +1,8 @@
 package com.maple.touriseguide.Fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -30,6 +32,7 @@ import java.util.Map;
  */
 
 public class SugFragment extends Fragment {
+    private SharedPreferences sp;
     private LinearLayout firstClo, secondClo;
     // 每一个ImageView的宽度，是屏幕宽度的1/2
     private int imgvWidth;
@@ -51,10 +54,11 @@ public class SugFragment extends Fragment {
         myInflater = inflater;
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sug, container, false);
+        sp = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         myScrollView = (MyScrollView) view.findViewById(R.id.myScrollView);
         firstClo = (LinearLayout) view.findViewById(R.id.firstClo);
         secondClo = (LinearLayout) view.findViewById(R.id.sceondClo);
-        Global.initsug();
+        Global.initsug(sp.getInt("sug_id",0));
         initView();
         return view;
     }
@@ -81,9 +85,15 @@ public class SugFragment extends Fragment {
             sugs.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    SharedPreferences.Editor editor = sp.edit();
+
                     Intent intent = new Intent(getActivity(), SugActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putInt("sug_no",sug_no);
+
+                    editor.putInt("sug_id",(int)Global.sug.get(sug_no).get("sug_id"));
+                    editor.commit();
+
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }

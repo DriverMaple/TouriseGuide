@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
+import android.widget.TextView;
 
 import com.maple.touriseguide.R;
 
@@ -16,8 +17,11 @@ import com.maple.touriseguide.R;
 
 public class IndexActivity extends AppCompatActivity {
     private final int SPLASH_DISPLAY_LENGHT = 3000;
+    private int recLen = 3;
     private Handler handler;
     private SharedPreferences sp;
+
+    private TextView djs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +33,7 @@ public class IndexActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        djs = (TextView) findViewById(R.id.djs);
         handler = new Handler();
         // 延迟SPLASH_DISPLAY_LENGHT时间然后跳转到MainActivity
         handler.postDelayed(new Runnable() {
@@ -45,5 +50,16 @@ public class IndexActivity extends AppCompatActivity {
                 IndexActivity.this.finish();
             }
         }, SPLASH_DISPLAY_LENGHT);
+        timer.postDelayed(runnable, 1000);
     }
+
+    Handler timer = new Handler();
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            recLen--;
+            djs.setText(recLen+" s");
+            timer.postDelayed(this, 1000);
+        }
+    };
 }

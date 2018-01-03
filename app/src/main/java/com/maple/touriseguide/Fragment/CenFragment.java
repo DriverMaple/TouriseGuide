@@ -1,23 +1,30 @@
 package com.maple.touriseguide.Fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.maple.touriseguide.Activity.LoginActivity;
 import com.maple.touriseguide.Activity.MainActivity;
 import com.maple.touriseguide.Activity.UserActivity;
 import com.maple.touriseguide.R;
 import com.maple.touriseguide.Util.MyViewPager;
+
+import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  * Created by rrr on 2017/10/31.
@@ -92,6 +99,54 @@ public class CenFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), UserActivity.class);
                 startActivity(intent);
+            }
+        });
+         xtsz.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 Toast.makeText(getContext(),"暂未开放",Toast.LENGTH_SHORT).show();
+             }
+         });
+        xgmm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater factory = LayoutInflater.from(getContext());
+                final View textEntryView = factory.inflate(R.layout.dialog_changepw, null);
+                final EditText pw = (EditText) textEntryView.findViewById(R.id.pw);
+                final EditText com_pw = (EditText)textEntryView.findViewById(R.id.com_pw);
+                AlertDialog.Builder normalDialog =
+                        new AlertDialog.Builder(getActivity());
+                normalDialog.setTitle("修改密码");
+                normalDialog.setView(textEntryView);
+                normalDialog.setPositiveButton("确定",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                try {
+                                    String password = pw.getText().toString();
+                                    String com_password = com_pw.getText().toString();
+                                    Toast.makeText(getContext(),"修改成功",Toast.LENGTH_SHORT).show();
+                                }catch (SecurityException e){
+
+                                }
+                                dialog.dismiss();
+                            }
+                        });
+                normalDialog.setNegativeButton("取消",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                // 显示
+                normalDialog.show();
+            }
+        });
+        bbxx.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(),"当前版本：v1.0.1\n       无需更新",Toast.LENGTH_SHORT).show();
             }
         });
     }
