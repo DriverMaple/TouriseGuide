@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.maple.touriseguide.Activity.LoginActivity;
 import com.maple.touriseguide.Activity.MainActivity;
 import com.maple.touriseguide.Activity.UserActivity;
+import com.maple.touriseguide.Common.Global;
 import com.maple.touriseguide.R;
 import com.maple.touriseguide.Util.MyViewPager;
 
@@ -88,9 +89,12 @@ public class CenFragment extends Fragment {
                 editor.commit();
 
                 //跳转
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                Intent intent = new Intent(getActivity(), LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
-                getActivity().finish();
+                Global.dynamic = null;
+                Global.sug = null;
+                MainActivity parentActivity = (MainActivity) getActivity();
+                parentActivity.finish();
             }
         });
 

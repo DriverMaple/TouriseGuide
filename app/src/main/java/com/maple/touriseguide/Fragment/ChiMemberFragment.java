@@ -68,61 +68,98 @@ public class ChiMemberFragment extends Fragment {
     }
 
     public void getMates() {
-        String url = Global.MyIP + "/getTeammate";
-        OkHttpUtils
-                .postString()
-                .url(url)
-                .content("{" +
-                        "\"team_id\":" + "\"" + sp.getInt("team_id", 0) + "\"" +
-                        "}")
-                .mediaType(MediaType.parse("application/json; charset=utf-8"))
-                .build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        Looper.prepare();
-                        Toast.makeText(getActivity().getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
-                        Looper.loop();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        final Result result = new Result(response, User.class, true);
-                        List<User> us = (List<User>) result.getValue();
-
-                        if (result.getResult() == 0) {
-                            SimpleAdapter adapter = new SimpleAdapter(getActivity(), getData(us), R.layout.item_member, new String[]{"head_pic", "member_name", "introduction"}, new int[]{R.id.head_pic, R.id.member_name, R.id.introduction});
-                            listView.setAdapter(adapter);
-                            listView.setonRefreshListener(new MyListView.OnRefreshListener() {
-
-                                @Override
-                                public void onRefresh() {
-                                    new AsyncTask<Void, Void, Void>() {
-                                        protected Void doInBackground(Void... params) {
-                                            try {
-                                                Thread.sleep(1000);
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-                                            //us.add(result.getValue());
-                                            return null;
-                                        }
-
-                                        @Override
-                                        protected void onPostExecute(Void result) {
-                                            //adapter.notifyDataSetChanged();
-                                            //lv.onRefreshComplete();
-                                        }
-                                    }.execute(null, null, null);
-                                }
-                            });
-                        } else {
+        if (sp.getInt("team_id", 0) != 0){
+            String url = Global.MyIP + "/getTeammate";
+            OkHttpUtils
+                    .postString()
+                    .url(url)
+                    .content("{" +
+                            "\"team_id\":" + "\"" + sp.getInt("team_id", 0) + "\"" +
+                            "}")
+                    .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                    .build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
                             Looper.prepare();
-                            Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
-                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity().getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
                             Looper.loop();
                         }
-                    }
-                });
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            final Result result = new Result(response, User.class, true);
+                            List<User> us = (List<User>) result.getValue();
+
+                            if (result.getResult() == 0) {
+                                SimpleAdapter adapter = new SimpleAdapter(getActivity(), getData(us), R.layout.item_member, new String[]{"head_pic", "member_name", "introduction"}, new int[]{R.id.head_pic, R.id.member_name, R.id.introduction});
+                                listView.setAdapter(adapter);
+                                listView.setonRefreshListener(new MyListView.OnRefreshListener() {
+
+                                    @Override
+                                    public void onRefresh() {
+                                        new AsyncTask<Void, Void, Void>() {
+                                            protected Void doInBackground(Void... params) {
+                                                try {
+                                                    Thread.sleep(1000);
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
+                                                //us.add(result.getValue());
+                                                return null;
+                                            }
+
+                                            @Override
+                                            protected void onPostExecute(Void result) {
+                                                //adapter.notifyDataSetChanged();
+                                                //lv.onRefreshComplete();
+                                            }
+                                        }.execute(null, null, null);
+                                    }
+                                });
+                            } else {
+                                Looper.prepare();
+                                Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
+                                        Toast.LENGTH_SHORT).show();
+                                Looper.loop();
+                            }
+                        }
+                    });
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 }

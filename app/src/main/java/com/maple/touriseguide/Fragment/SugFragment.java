@@ -48,12 +48,16 @@ public class SugFragment extends Fragment {
     private LinearLayout clos[] = new LinearLayout[2];
 
     private MyScrollView myScrollView;
+    View view;
+
+    static BitmapFactory.Options opts;
+    static BitmapFactory.Options options;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         myInflater = inflater;
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_sug, container, false);
+        view = inflater.inflate(R.layout.fragment_sug, container, false);
         sp = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         myScrollView = (MyScrollView) view.findViewById(R.id.myScrollView);
         firstClo = (LinearLayout) view.findViewById(R.id.firstClo);
@@ -77,7 +81,7 @@ public class SugFragment extends Fragment {
             lp.setMargins(0, 5, 0, 0);
             view.setLayoutParams(lp);
 
-            img.setImageBitmap(decodeSampledBitmapFromResource(getResources(), (Integer) map.get("sug_pic"), lp.width/2, lp.height/2));
+            img.setImageBitmap(decodeSampledBitmapFromResource(getResources(), (Integer) map.get("sug_pic"), lp.width/8, lp.height/8));
             text.setText((String)map.get("sug_title"));
             clos[i % 2].addView(view);
 
@@ -103,7 +107,7 @@ public class SugFragment extends Fragment {
 
 
     public static BitmapFactory.Options decodeBitmapResource(Resources resources, int id) {
-        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts = new BitmapFactory.Options();
         opts.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(resources, id, opts);
         return opts;
@@ -111,7 +115,7 @@ public class SugFragment extends Fragment {
     public static Bitmap decodeSampledBitmapFromResource(Resources res, int resId,
                                                          int reqWidth, int reqHeight) {
         // 第一次解析将inJustDecodeBounds设置为true，来获取图片大小
-        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeResource(res, resId, options);
         // 调用上面定义的方法计算inSampleSize值
@@ -167,6 +171,11 @@ public class SugFragment extends Fragment {
             httplink(Global.sug.get(i),i);
         }
         pageIndex++;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
 }

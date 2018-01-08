@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.maple.touriseguide.Common.ActivityCollector;
 import com.maple.touriseguide.Common.Global;
 import com.maple.touriseguide.Common.MyFragmentAdapter;
 import com.maple.touriseguide.Common.Result;
@@ -221,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
             // 利用handler延迟发送更改状态信息
             mHandler.sendEmptyMessageDelayed(0, 2000);
         } else {
-            finish();
+            MainActivity.this.finish();
             System.exit(0);
         }
     }
@@ -305,5 +307,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        //删除该活动
+        ActivityCollector.removeActivity(this);
     }
 }

@@ -40,10 +40,10 @@ public class IndexActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (sp.getBoolean("isLogin",false)){
-                    Intent intent = new Intent(IndexActivity.this, MainActivity.class);
+                    Intent intent = new Intent(IndexActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 } else {
-                    Intent intent = new Intent(IndexActivity.this, LoginActivity.class);
+                    Intent intent = new Intent(IndexActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 }
 
@@ -62,4 +62,10 @@ public class IndexActivity extends AppCompatActivity {
             timer.postDelayed(this, 1000);
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.gc();
+    }
 }

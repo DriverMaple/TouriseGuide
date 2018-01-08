@@ -26,6 +26,8 @@ public class SugActivity extends AppCompatActivity {
     private TextView sug_name;
     private TextView sug_content;
 
+    private Drawable drawable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +46,7 @@ public class SugActivity extends AppCompatActivity {
         Map<String,Object> sug = Global.sug.get(no);
 
         BitmapFactory.Options pic= SugFragment.decodeBitmapResource(getResources(), (Integer) sug.get("sug_pic"));
-        Drawable drawable = new BitmapDrawable(SugFragment.decodeSampledBitmapFromResource(getResources(),(Integer) sug.get("sug_pic"),pic.outWidth/2,pic.outHeight/2));
+        drawable = new BitmapDrawable(SugFragment.decodeSampledBitmapFromResource(getResources(),(Integer) sug.get("sug_pic"),pic.outWidth/2,pic.outHeight/2));
 
         sug_content.setMovementMethod(ScrollingMovementMethod.getInstance());
         sug_pic.setBackground(drawable);
@@ -56,6 +58,12 @@ public class SugActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        finish();
+        SugActivity.this.finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        drawable = null;
+        super.onDestroy();
     }
 }

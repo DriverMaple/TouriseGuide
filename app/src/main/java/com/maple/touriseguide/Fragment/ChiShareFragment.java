@@ -33,36 +33,16 @@ public class ChiShareFragment extends Fragment {
     private ListView lv;
     private ImageView bt_share;
 
+    SimpleAdapter adapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.chi_fragment_share, container, false);
-        initView(view);
-        return view;
-    }
-
-    private void initView(View view) {
         lv = (ListView) view.findViewById(R.id.share);
         bt_share = (ImageView) view.findViewById(R.id.bt_share);
         setData();
-        SimpleAdapter adapter = new SimpleAdapter(getActivity(), setData(), R.layout.item_share, new String[]{"head_pic", "share_name", "share_time", "share_content", "share_pic"}, new int[]{R.id.head_pic, R.id.share_name, R.id.share_time, R.id.share_content, R.id.share_pic});
-        /*{
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-
-
-                View view = super.getView(position, convertView, parent);
-                ImageView like = (ImageView) view.findViewById(R.id.like);
-                like.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(getContext(),"我被点击了1！",Toast.LENGTH_SHORT).show();
-                    }
-                });
-                return view;
-            }
-        };*/
-        lv.setAdapter(adapter);
+        initView(view);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -77,6 +57,12 @@ public class ChiShareFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        return view;
+    }
+
+    private void initView(View view) {
+        adapter = new SimpleAdapter(getActivity(), Global.dynamic, R.layout.item_share, new String[]{"head_pic", "share_name", "share_time", "share_content", "share_pic"}, new int[]{R.id.head_pic, R.id.share_name, R.id.share_time, R.id.share_content, R.id.share_pic});
+        lv.setAdapter(adapter);
     }
 
     private List<Map<String, Object>> setData() {
@@ -87,7 +73,7 @@ public class ChiShareFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();  // Always call the superclass method first
-        SimpleAdapter adapter = new SimpleAdapter(getActivity(), Global.dynamic, R.layout.item_share, new String[]{"head_pic", "share_name", "share_time", "share_content", "share_pic"}, new int[]{R.id.head_pic, R.id.share_name, R.id.share_time, R.id.share_content, R.id.share_pic});
+        adapter = new SimpleAdapter(getActivity(), Global.dynamic, R.layout.item_share, new String[]{"head_pic", "share_name", "share_time", "share_content", "share_pic"}, new int[]{R.id.head_pic, R.id.share_name, R.id.share_time, R.id.share_content, R.id.share_pic});
         lv.setAdapter(adapter);
     }
 }

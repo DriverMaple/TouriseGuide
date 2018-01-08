@@ -50,6 +50,12 @@ public class TeaFragment extends Fragment {
     private EditText e_team_pw;
     private SharedPreferences.Editor editor;
 
+    private List<Fragment> fragments = new ArrayList<Fragment>();
+    MyFragmentAdapter adapter;
+    ChiMemberFragment chiMemberFragment;
+    ChiShareFragment chiShareFragment;
+    private boolean is_team = false;
+
     static int pre_color = Color.rgb(210, 7, 3);
     static int color = Color.rgb(255, 255, 255);
     private SharedPreferences sp;
@@ -79,12 +85,12 @@ public class TeaFragment extends Fragment {
         e_team_pw = (EditText) view.findViewById(R.id.team_pw);
 
         //构造适配器
-        List<Fragment> fragments = new ArrayList<Fragment>();
-        fragments.add(new ChiMemberFragment());
-        fragments.add(new ChiShareFragment());
+        chiMemberFragment = new ChiMemberFragment();
+        chiShareFragment = new ChiShareFragment();
+        fragments.add(chiMemberFragment);
+        fragments.add(chiShareFragment);
 
-        MyFragmentAdapter adapter = new MyFragmentAdapter(getActivity().getSupportFragmentManager(), fragments);
-
+        adapter = new MyFragmentAdapter(getActivity().getSupportFragmentManager(), fragments);
         //设定适配器
         viewPager.setScanScroll(false);
         viewPager.setAdapter(adapter);
@@ -96,8 +102,10 @@ public class TeaFragment extends Fragment {
 
         if (sp.getInt("team_id", 0) == 0) {
             showNullTeam();
+            is_team = false;
         } else {
             showVp();
+            is_team = true;
         }
     }
 
@@ -188,7 +196,12 @@ public class TeaFragment extends Fragment {
                                         //记住用户名、密码、
 
                                         editor.putInt("team_id", team.getTeam_id());
+                                        //editor.putInt("team_id", team.getTeam_id());
                                         editor.commit();
+                                        if (is_team){
+                                            chiMemberFragment.getMates();
+                                        }
+                                        is_team = true;
                                         showVp();
                                     } else {
                                         Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
@@ -284,6 +297,7 @@ public class TeaFragment extends Fragment {
                                                     Toast.LENGTH_SHORT).show();
                                             //记住用户名、密码、
                                             editor.remove("team_id");
+                                            editor.putString("guider_phone", "17764581380");
                                             editor.commit();
                                         } else {
                                             Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),
@@ -302,5 +316,40 @@ public class TeaFragment extends Fragment {
                 });
         // 显示
         normalDialog.show();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
     }
 }

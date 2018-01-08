@@ -77,7 +77,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                 startActivity(intent);
-                finish();
+                RegisterActivity.this.finish();
             }
         });
 
@@ -124,7 +124,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     //跳转
                                     Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                                     startActivity(intent);
-                                    finish();
+                                    RegisterActivity.this.finish();
                                     Looper.loop();
                                 } else {
                                     Looper.prepare();
@@ -171,7 +171,7 @@ public class RegisterActivity extends AppCompatActivity {
             // 利用handler延迟发送更改状态信息
             mHandler.sendEmptyMessageDelayed(0, 2000);
         } else {
-            finish();
+            RegisterActivity.this.finish();
             System.exit(0);
         }
     }

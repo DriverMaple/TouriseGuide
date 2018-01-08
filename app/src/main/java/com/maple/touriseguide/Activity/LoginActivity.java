@@ -23,6 +23,7 @@ import com.maple.touriseguide.Common.Global;
 import com.maple.touriseguide.Common.Result;
 import com.maple.touriseguide.Entity.Team;
 import com.maple.touriseguide.Entity.User;
+import com.maple.touriseguide.Fragment.ChiMemberFragment;
 import com.maple.touriseguide.R;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
@@ -69,6 +70,16 @@ public class LoginActivity extends AppCompatActivity {
         initView();
 
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     private void initView() {
@@ -129,10 +140,6 @@ public class LoginActivity extends AppCompatActivity {
                                     editor.putBoolean("isLogin",true);
                                     editor.commit();
                                     checkTeam();
-                                    //跳转
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                    startActivity(intent);
-                                    finish();
 
                                     Looper.loop();
                                 } else {
@@ -164,26 +171,13 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
-                finish();
+                LoginActivity.this.finish();
             }
         });
 
     }
 
-    /**
-     * 以下为实现点击两次返回退出应用
-     * @param keyCode
-     * @param event
-     * @return
-     */
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            exit();
-            return false;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
+
 
     private void exit() {
         if (!isExit) {
@@ -193,7 +187,7 @@ public class LoginActivity extends AppCompatActivity {
             // 利用handler延迟发送更改状态信息
             mHandler.sendEmptyMessageDelayed(0, 2000);
         } else {
-            finish();
+            LoginActivity.this.finish();
             System.exit(0);
         }
     }
@@ -228,7 +222,13 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.putInt("team_id", team.getTeam_id());
                                 editor.putString("guider_phone", team.getGuider_phone());
                                 editor.commit();
+                                //ChiMemberFragment chiMemberFragment = new ChiMemberFragment();
+                                //chiMemberFragment.getMates();
                             }
+                            //跳转
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            LoginActivity.this.finish();
                         } else {
                             Looper.prepare();
                             Toast.makeText(getApplicationContext(), result.getMessage(),
@@ -237,5 +237,10 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }
