@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
@@ -21,12 +22,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.maple.touriseguide.Common.ActivityCollector;
-import com.maple.touriseguide.Common.Global;
 import com.maple.touriseguide.Common.MyFragmentAdapter;
-import com.maple.touriseguide.Common.Result;
-import com.maple.touriseguide.Entity.Team;
 import com.maple.touriseguide.Fragment.CenFragment;
 import com.maple.touriseguide.Fragment.SugFragment;
 import com.maple.touriseguide.Fragment.MapFragment;
@@ -34,15 +30,9 @@ import com.maple.touriseguide.Fragment.TeaFragment;
 import com.maple.touriseguide.R;
 import com.maple.touriseguide.Util.CircleImageView;
 import com.maple.touriseguide.Util.MyViewPager;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
-import com.zhy.http.okhttp.request.RequestCall;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.Call;
-import okhttp3.MediaType;
 
 public class MainActivity extends AppCompatActivity {
     private MyViewPager vp;
@@ -62,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private CircleImageView urgent;
     private SharedPreferences sp;
     //Context mContext = getApplicationContext();
+    MyFragmentAdapter adapter;
+    List<Fragment> fragments;
 
 
     // 定义一个变量，来标识是否退出
@@ -104,13 +96,13 @@ public class MainActivity extends AppCompatActivity {
         urgent = (CircleImageView) findViewById(R.id.urgent);
 
         //构造适配器
-        List<Fragment> fragments = new ArrayList<Fragment>();
+        fragments = new ArrayList<Fragment>();
         fragments.add(new SugFragment());
         fragments.add(new TeaFragment());
         fragments.add(new MapFragment());
         fragments.add(new CenFragment());
 
-        MyFragmentAdapter adapter = new MyFragmentAdapter(getSupportFragmentManager(), fragments);
+        adapter = new MyFragmentAdapter(getSupportFragmentManager(), fragments);
 
         //设定适配器
         vp = (MyViewPager) findViewById(R.id.viewpager);
@@ -307,7 +299,5 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //删除该活动
-        ActivityCollector.removeActivity(this);
     }
 }

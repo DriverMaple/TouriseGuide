@@ -74,7 +74,7 @@ import okhttp3.Response;
  * Created by Maple on 2017/10/25.
  */
 
-public class MapFragment extends Fragment implements BaiduMap.OnMapClickListener,OnGetRoutePlanResultListener {
+public class MapFragment extends Fragment implements BaiduMap.OnMapClickListener, OnGetRoutePlanResultListener {
     private MapView mMapView = null;
     private BaiduMap mBaiduMap;
     private ImageView locate_you;
@@ -104,19 +104,19 @@ public class MapFragment extends Fragment implements BaiduMap.OnMapClickListener
     /**
      * 路线数据结构的基类,表示一条路线，路线可能包括：路线规划中的换乘/驾车/步行路线
      * 此类为路线数据结构的基类，一般关注其子类对象即可，无需直接生成该类对象
-     * */
+     */
     RouteLine route = null;
 
     /**
      * 该类提供一个能够显示和管理多个Overlay的基类
-     * */
+     */
     OverlayManager routeOverlay = null;
 
     boolean useDefaultIcon = false;
     //private TextView popupText = null;//泡泡view
     /**
      * 路径规划搜索接口
-     * */
+     */
     RoutePlanSearch mSearch = null;    // 搜索模块，也可去掉地图模块独立使用
 
     @Override
@@ -144,27 +144,6 @@ public class MapFragment extends Fragment implements BaiduMap.OnMapClickListener
         //开始定位
         mLocationClient.start();
         return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        //在Fragment执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
-        mMapView.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        //在<span style="font-family: 微软雅黑, 'Microsoft YaHei', sans-serif;">Fragment</span>执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
-        mMapView.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //在Fragment执行onDestroy时执行mMapView.onDestroy()，实现地图生命周期管理
-        mMapView.onDestroy();
     }
 
     /**
@@ -340,6 +319,7 @@ public class MapFragment extends Fragment implements BaiduMap.OnMapClickListener
     private class MyLocationListener implements BDLocationListener {
         List<MarkerInfoUtil> infos = new ArrayList<>();
         MarkerInfoUtil info = new MarkerInfoUtil();
+
         @Override
         public void onReceiveLocation(BDLocation bdLocation) {
             //构造定位数据
@@ -373,8 +353,8 @@ public class MapFragment extends Fragment implements BaiduMap.OnMapClickListener
                 mBaiduMap.setMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
             }
             MyPosition(bdLocation);
-            if (sp.getInt("team_id",0) != 0){
-                if (sp.getInt("user_role",0) == 2){
+            if (sp.getInt("team_id", 0) != 0) {
+                if (sp.getInt("user_role", 0) == 2) {
                     showGuider();
                 } else {
                     showTourise();
@@ -449,8 +429,8 @@ public class MapFragment extends Fragment implements BaiduMap.OnMapClickListener
                             User user = (User) result.getValue();
                             if (result.getResult() == 0) {
                                 infos.clear();
-                                infos.add(new MarkerInfoUtil(user.getLatitude(),user.getLongitude(),user.getNick_name(),user.getAccount()));
-                                if (isFresh){
+                                infos.add(new MarkerInfoUtil(user.getLatitude(), user.getLongitude(), user.getNick_name(), user.getAccount()));
+                                if (isFresh) {
                                     addOverlay(infos);
                                 }
                             } else {
@@ -489,10 +469,10 @@ public class MapFragment extends Fragment implements BaiduMap.OnMapClickListener
                             List<User> users = (List<User>) result.getValue();
                             if (result.getResult() == 0) {
                                 infos.clear();
-                                for (User user:users){
-                                    infos.add(new MarkerInfoUtil(user.getLatitude(),user.getLongitude(),user.getNick_name(),user.getAccount()));
+                                for (User user : users) {
+                                    infos.add(new MarkerInfoUtil(user.getLatitude(), user.getLongitude(), user.getNick_name(), user.getAccount()));
                                 }
-                                if (isFresh){
+                                if (isFresh) {
                                     addOverlay(infos);
                                 }
                             } else {
@@ -512,9 +492,9 @@ public class MapFragment extends Fragment implements BaiduMap.OnMapClickListener
             LatLng latLng = null;
             Marker marker;
             OverlayOptions options;
-            for(MarkerInfoUtil info:infos){
+            for (MarkerInfoUtil info : infos) {
                 //获取经纬度
-                latLng = new LatLng(info.getLatitude(),info.getLongitude());
+                latLng = new LatLng(info.getLatitude(), info.getLongitude());
                 //设置marker
                 options = new MarkerOptions()
                         .position(latLng)//设置位置
@@ -544,7 +524,7 @@ public class MapFragment extends Fragment implements BaiduMap.OnMapClickListener
                             //重置浏览节点的路线数据
                             route = null;
                             PlanNode stNode = PlanNode.withLocation(ll);
-                            PlanNode enNode = PlanNode.withLocation(new LatLng(infoUtil.getLatitude(),infoUtil.getLongitude()));
+                            PlanNode enNode = PlanNode.withLocation(new LatLng(infoUtil.getLatitude(), infoUtil.getLongitude()));
                             mSearch.walkingSearch((new WalkingRoutePlanOption())
                                     .from(stNode)
                                     .to(enNode));
@@ -564,9 +544,10 @@ public class MapFragment extends Fragment implements BaiduMap.OnMapClickListener
             });
         }
     }
+
     /**
      * WalkingRouteOverlay已经实现了BaiduMap.OnMarkerClickListener接口
-     * */
+     */
     private class MyWalkingRouteOverlay extends WalkingRouteOverlay {
 
         public MyWalkingRouteOverlay(BaiduMap baiduMap) {
@@ -577,7 +558,7 @@ public class MapFragment extends Fragment implements BaiduMap.OnMapClickListener
          * public BitmapDescriptor getStartMarker()
          * 覆写此方法以改变默认起点图标
          * 返回:起点图标
-         * */
+         */
         @Override
         public BitmapDescriptor getStartMarker() {
             if (useDefaultIcon) {
@@ -590,7 +571,7 @@ public class MapFragment extends Fragment implements BaiduMap.OnMapClickListener
          * public BitmapDescriptor getTerminalMarker()
          * 覆写此方法以改变默认终点图标
          * 返回:终点图标
-         * */
+         */
         @Override
         public BitmapDescriptor getTerminalMarker() {
             if (useDefaultIcon) {
@@ -600,4 +581,23 @@ public class MapFragment extends Fragment implements BaiduMap.OnMapClickListener
         }
     }
 
+    @Override
+    public void onPause() {
+        mMapView.onPause();
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        mMapView.onResume();
+        super.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mLocationClient != null)
+            mLocationClient.stop();
+        mMapView.onDestroy();
+        super.onDestroy();
+    }
 }

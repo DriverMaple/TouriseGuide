@@ -89,10 +89,8 @@ public class CenFragment extends Fragment {
                 editor.commit();
 
                 //跳转
-                Intent intent = new Intent(getActivity(), LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
-                Global.dynamic = null;
-                Global.sug = null;
                 MainActivity parentActivity = (MainActivity) getActivity();
                 parentActivity.finish();
             }

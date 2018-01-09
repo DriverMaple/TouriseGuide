@@ -1,12 +1,16 @@
 package com.maple.touriseguide;
 
 import android.app.Application;
+import android.os.StrictMode;
 
 import com.zhy.http.okhttp.OkHttpUtils;
 
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
+
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.GINGERBREAD;
 
 /**
  * Created by rrr on 2017/10/30.

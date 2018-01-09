@@ -3,6 +3,7 @@ package com.maple.touriseguide.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -13,25 +14,20 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.gson.Gson;
 import com.maple.touriseguide.Common.Global;
 import com.maple.touriseguide.Common.Result;
 import com.maple.touriseguide.Entity.Team;
 import com.maple.touriseguide.Entity.User;
-import com.maple.touriseguide.Fragment.ChiMemberFragment;
 import com.maple.touriseguide.R;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
 import com.zhy.http.okhttp.callback.StringCallback;
-
-import java.util.Timer;
-import java.util.TimerTask;
-
 import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.Response;
@@ -46,6 +42,8 @@ public class LoginActivity extends AppCompatActivity {
     private RadioGroup role;
     private RadioButton youke;
     private RadioButton daoyou;
+    private ImageView img_2;
+    private LinearLayout img_1;
 
     private int user_role = 2;
     private String phone;
@@ -90,7 +88,8 @@ public class LoginActivity extends AppCompatActivity {
         role = (RadioGroup) findViewById(R.id.user_role);
         youke = (RadioButton) findViewById(R.id.youke);
         daoyou = (RadioButton) findViewById(R.id.daoyou);
-
+        img_1 = (LinearLayout) findViewById(R.id.img_1);
+        img_2 = (ImageView) findViewById(R.id.img_2);
 
         role.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -140,7 +139,6 @@ public class LoginActivity extends AppCompatActivity {
                                     editor.putBoolean("isLogin",true);
                                     editor.commit();
                                     checkTeam();
-
                                     Looper.loop();
                                 } else {
                                     Looper.prepare();
@@ -177,7 +175,21 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-
+    /**
+     * 以下为实现点击两次返回退出应用
+     *
+     * @param keyCode
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exit();
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
     private void exit() {
         if (!isExit) {
@@ -210,7 +222,6 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
                         Looper.loop();
                     }
-
                     @Override
                     public void onResponse(String response, int id) {
                         Result result = new Result(response, Team.class, false);
@@ -226,7 +237,7 @@ public class LoginActivity extends AppCompatActivity {
                                 //chiMemberFragment.getMates();
                             }
                             //跳转
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(intent);
                             LoginActivity.this.finish();
                         } else {
@@ -242,5 +253,13 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+//        BitmapDrawable bimg_1 = (BitmapDrawable)img_1.getBackground();
+//        img_1.setBackgroundResource(0);
+//        DataCleanManager.releaseImageViewResouce(img_2);
+//        img_2.setImageResource(0);
+//        bimg_1.setCallback(null);
+//        bimg_1.getBitmap().recycle();
+//        setContentView(R.layout.layout_null);
+//        System.gc();
     }
 }

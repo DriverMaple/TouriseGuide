@@ -19,6 +19,7 @@ public class IndexActivity extends AppCompatActivity {
     private final int SPLASH_DISPLAY_LENGHT = 3000;
     private int recLen = 3;
     private Handler handler;
+    Runnable mRunnable;
     private SharedPreferences sp;
 
     private TextView djs;
@@ -36,7 +37,7 @@ public class IndexActivity extends AppCompatActivity {
         djs = (TextView) findViewById(R.id.djs);
         handler = new Handler();
         // 延迟SPLASH_DISPLAY_LENGHT时间然后跳转到MainActivity
-        handler.postDelayed(new Runnable() {
+        mRunnable = new Runnable() {
             @Override
             public void run() {
                 if (sp.getBoolean("isLogin",false)){
@@ -46,10 +47,10 @@ public class IndexActivity extends AppCompatActivity {
                     Intent intent = new Intent(IndexActivity.this, LoginActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                 }
-
                 IndexActivity.this.finish();
             }
-        }, SPLASH_DISPLAY_LENGHT);
+        };
+        handler.postDelayed(mRunnable, SPLASH_DISPLAY_LENGHT);
         timer.postDelayed(runnable, 1000);
     }
 
@@ -66,6 +67,8 @@ public class IndexActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        System.gc();
+        timer.removeCallbacks(runnable);
+        handler.removeCallbacks(mRunnable);
+        setContentView(R.layout.layout_null);
     }
 }
