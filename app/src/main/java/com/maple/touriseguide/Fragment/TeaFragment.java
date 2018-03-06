@@ -297,7 +297,7 @@ public class TeaFragment extends Fragment {
                                                     Toast.LENGTH_SHORT).show();
                                             //记住用户名、密码、
                                             editor.remove("team_id");
-                                            editor.putString("guider_phone", "17764581380");
+                                            editor.putString("guider_phone", "17764591380");
                                             editor.commit();
                                         } else {
                                             Toast.makeText(getActivity().getApplicationContext(), result.getMessage(),

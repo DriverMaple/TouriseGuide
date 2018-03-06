@@ -96,6 +96,14 @@ public class UserActivity extends AppCompatActivity {
                 user_name.setBackgroundResource(R.color.transparent);
                 edit_motto.setBackgroundResource(R.color.transparent);
 
+                String suser_name = user_name.getText().toString();
+                String sedit_motto = edit_motto.getText().toString();
+
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("nick_name",suser_name);
+                editor.putString("motto",sedit_motto);
+                editor.commit();
+
                 Toast.makeText(getApplicationContext(),"修改已保存",Toast.LENGTH_SHORT).show();
             }
         });

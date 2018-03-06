@@ -52,13 +52,18 @@ public class CenFragment extends Fragment {
         return view;
     }
 
+    private void setMeaasge(){
+        user_name.setText(sp.getString("nick_name", ""));
+        motto.setText(sp.getString("motto", ""));
+    }
+
     private void initView(View view) {
         exists = (Button) view.findViewById(R.id.exist);
         exit = (ImageView) view.findViewById(R.id.exit);
         user_name = (TextView) view.findViewById(R.id.user_name);
         motto = (TextView) view.findViewById(R.id.motto);
-        user_name.setText(sp.getString("nick_name", ""));
-        motto.setText(sp.getString("motto", ""));
+
+        setMeaasge();
 
         jbxx = (LinearLayout) view.findViewById(R.id.jbxx);
         xtsz = (LinearLayout) view.findViewById(R.id.xtsz);
@@ -151,5 +156,11 @@ public class CenFragment extends Fragment {
                 Toast.makeText(getContext(),"当前版本：v1.0.1\n       无需更新",Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onStart() {
+        setMeaasge();
+        super.onStart();
     }
 }

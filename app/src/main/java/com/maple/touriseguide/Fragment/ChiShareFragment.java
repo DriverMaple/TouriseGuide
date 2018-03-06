@@ -1,7 +1,9 @@
 package com.maple.touriseguide.Fragment;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -33,6 +35,8 @@ public class ChiShareFragment extends Fragment {
     private ListView lv;
     private ImageView bt_share;
 
+    private SharedPreferences sp;
+
     SimpleAdapter adapter;
 
     @Override
@@ -41,6 +45,7 @@ public class ChiShareFragment extends Fragment {
         View view = inflater.inflate(R.layout.chi_fragment_share, container, false);
         lv = (ListView) view.findViewById(R.id.share);
         bt_share = (ImageView) view.findViewById(R.id.bt_share);
+        sp = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
         setData();
         initView(view);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -66,13 +71,18 @@ public class ChiShareFragment extends Fragment {
     }
 
     private List<Map<String, Object>> setData() {
-        Global.initdata();
+        if (sp.getInt("team_id",0) == 18){
+            //Global.initdata();
+        }
         return Global.dynamic;
     }
 
     @Override
     public void onStart() {
         super.onStart();  // Always call the superclass method first
+        if (sp.getInt("team_id",0) == 18 && Global.dynamic.size() < 3){
+            //Global.initdata();
+        }
         adapter = new SimpleAdapter(getActivity(), Global.dynamic, R.layout.item_share, new String[]{"head_pic", "share_name", "share_time", "share_content", "share_pic"}, new int[]{R.id.head_pic, R.id.share_name, R.id.share_time, R.id.share_content, R.id.share_pic});
         lv.setAdapter(adapter);
     }
